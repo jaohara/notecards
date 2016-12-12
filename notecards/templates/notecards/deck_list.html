@@ -1,0 +1,9 @@
+{% extends 'notecards/base.html' %}
+
+{% block content %}
+    <ul>
+        {% for deck in decks %}
+        <li>{{ deck.title }} - Cards: {{ deck.card_count }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
