@@ -4,7 +4,14 @@
     <ul>
         {% for deck in decks %}
         <li><a href="{% url 'deck_view' pk=deck.pk %}">
-        {{ deck.title }} - Cards: {{ deck.card_count }}</a></li>
+        {{ deck.title }}</a> - Cards: {{ deck.card_count }} -
+        <a href="{% url 'delete_deck' pk=deck.pk %}">(remove)</a></li>
         {% endfor %}
     </ul>
+    <h2>Create a Deck</h2>
+    <form method="POST" class="deck-form" action="{% url 'create_deck'%}">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Create</button>
+    </form>
 {% endblock %}

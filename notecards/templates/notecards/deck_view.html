@@ -12,7 +12,7 @@
     <h3>{{test_var}}</h3>
 
     <h2>Add a Card</h2>
-    <form method="POST" class="deck-form" action="{% url 'add_card_to_deck' pk=deck.pk%}">
+    <form method="POST" class="card-form" action="{% url 'add_card_to_deck' pk=deck.pk%}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit" class="save btn btn-default">Add to Deck</button>

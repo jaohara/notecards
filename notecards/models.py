@@ -47,7 +47,7 @@ class Card(models.Model):
 
         I need to make sure this behavior is secure, as there could easily be a scenario
         where the counts get out of order (calling remove_card? That would completely
-        fuck with the order)
+        mess with the order)
 
         You know what? I'm gonna ignore this for now. It's not really necessary for
         functionality. I'm going to leave this for a later version.
