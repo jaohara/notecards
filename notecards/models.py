@@ -1,19 +1,29 @@
 from django.db import models
 from django.utils import timezone
 
+
+class Tag(models.Model):
+    word = models.CharField(max_length=30)
+
+    def __str__(self):
+        return "Tag: {}".format(self.word)
+
 class Deck(models.Model):
     author = models.ForeignKey('auth.User')
     title = models.CharField(max_length=200)
     created_date = models.DateTimeField(default=timezone.now)
     card_count = models.PositiveIntegerField(default=0)
+    tags = models.ManyToManyField(Tag, blank=True)
 
     # should this be called by the Card model on creation or by the view that creates it?
     def add_card(self):
         self.card_count += 1
+        self.save()
 
     def remove_card(self):
         if self.card_count > 0:
             self.card_count -= 1
+            self.save()
 
     def __str__(self):
         return "{} - Cards: {}".format(self.title, self.card_count)

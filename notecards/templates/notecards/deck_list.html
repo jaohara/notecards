@@ -3,7 +3,8 @@
 {% block content %}
     <ul>
         {% for deck in decks %}
-        <li>{{ deck.title }} - Cards: {{ deck.card_count }}</li>
+        <li><a href="{% url 'deck_view' pk=deck.pk %}">
+        {{ deck.title }} - Cards: {{ deck.card_count }}</a></li>
         {% endfor %}
     </ul>
 {% endblock %}
