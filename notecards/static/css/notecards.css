@@ -1,7 +1,128 @@
 * {
     font-family: 'Fanwood Text', serif;
+    font-size: 1.0em;
 }
+
+/* ------------------------------------------------------
+    Navigation 
+------------------------------------------------------ */
+
+.page-header{
+    margin-left: 40px;
+    margin-right: 40px;
+}
+
+.page-header h1 a{
+    text-decoration: none;
+    font-size: 1.4em;
+}
+
+/* ------------------------------------------------------
+    Buttons
+------------------------------------------------------ */
+
+.btn {
+    font-size: 1.1em;
+}
+
+/* ------------------------------------------------------
+    Form Elements
+------------------------------------------------------ */
+
+.card-form textarea{
+    border: 1px solid #bbb;
+    background: rgba(0,0,0,0.03);
+    font-size: 2.0em;
+    width: 11em;
+    height: 8.0em;
+    text-align: center;
+}
+
+/* ------------------------------------------------------
+    Headers
+------------------------------------------------------ */
 
 h1, h2, h3, h4, h5 {
     font-family: 'Quattrocento', serif;
+}
+
+/* ------------------------------------------------------
+    Hyperlinks
+------------------------------------------------------ */
+
+a{
+    color: #004B6B;
+    /*border-bottom: 1px dotted #004B6B;*/
+    text-decoration: underline;
+}
+
+a:hover{
+    /*border-bottom: 1px solid #004B6B;*/
+}
+
+a .glyphicon-remove{
+    color: rgb(130, 17, 9);
+}
+
+/* ------------------------------------------------------
+    Deck List Table
+------------------------------------------------------ */
+
+.deck-table{
+    font-size: 1.4em;
+    width: 100%;
+}
+
+
+.deck-table tr.deck-table-row:hover{
+    background-color: rgba(255,223,165,.2);
+}
+
+.deck-table a{
+    display: block;
+}
+
+
+.deck-table tr:first-child{
+    background-color: #eee;
+}
+
+
+.deck-table, .deck-table th, .deck-table td{
+    border: 1px solid #bbb;
+}
+
+.deck-table th, .deck-table td{
+    padding: .6em .3em .6em .6em;
+}
+
+.deck-table-row td:last-child{
+    text-align: center;
+}
+
+/* ------------------------------------------------------
+    Card Table
+------------------------------------------------------ */
+
+.card-table{
+    width: 90%;
+    margin: 0 auto;
+    font-size: 1.4em;
+    border-collapse: separate;
+    border-spacing: 1.0em;
+}
+
+.card-table .card-table-header th{
+    text-align: center;
+    font-size: .8em;
+    font-style: italic;
+}
+
+.card-front, .card-back{
+    text-align: center;
+    border: 1px solid #bbb;
+    font-size: 1.6em;
+    padding: 2.6em 1.0em;
+    width: 11em;
+    background-color: rgba(0,0,0,0.03);
 }

@@ -2,19 +2,28 @@
 
 {% block content %}
     <h1>{{deck.title}}</h1>
-    <ul>
+    <table class="card-table">
+        <tr class="card-table-header">
+            <th>Front</th>
+            <th>Back</th>
+        </tr>
         {% for card in cards %}
-            <li>{{card.front}} -- {{card.back}} --
-            <a href="{% url 'remove_card_from_deck' pk=card.pk%}">(remove)</a></li>
+            <tr class="card-table-row">
+                <td class="card-front">{{card.front}}</td> 
+                <td class="card-back">{{card.back}}</td>
+                <td class="card-remove">
+                    <a href="{% url 'remove_card_from_deck' pk=card.pk%}">
+                    <span class="glyphicon glyphicon-remove"></span>
+                    </a>
+                </td>
+            </tr>
         {% endfor %}
-    </ul>
-
-    <h3>{{test_var}}</h3>
+    </table>
 
     <h2>Add a Card</h2>
     <form method="POST" class="card-form" action="{% url 'add_card_to_deck' pk=deck.pk%}">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form }}
         <button type="submit" class="save btn btn-default">Add to Deck</button>
     </form>
 {% endblock %}

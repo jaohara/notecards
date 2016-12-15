@@ -1,17 +1,37 @@
 {% extends 'notecards/base.html' %}
 
 {% block content %}
-    <ul>
+    <h1>Current Decks</h1>
+    <table class="deck-table">
+
+        <tr class="deck-table-header">
+            <th>Deck</th>
+            <th>Cards</th>
+            <th>Author</th>
+            <th>Created</th>
+            <th>Remove?</th>
+        </tr>
+
         {% for deck in decks %}
-        <li><a href="{% url 'deck_view' pk=deck.pk %}">
-        {{ deck.title }}</a> - Cards: {{ deck.card_count }} -
-        <a href="{% url 'delete_deck' pk=deck.pk %}">(remove)</a></li>
+        <tr class="deck-table-row">
+            <td><a href="{% url 'deck_view' pk=deck.pk %}">{{deck.title}}</a></td>
+            <td class="centered-cell">{{deck.card_count}}</td>
+            <td class="centered-cell">{{deck.author|capfirst}}</td>
+            <td>{{deck.created_date}}</td>
+            <td class="centered-cell">
+                <a href="{% url 'delete_deck' pk=deck.pk %}">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </a>
+            </td>
+        </tr>
         {% endfor %}
-    </ul>
+
+    </table>
+
     <h2>Create a Deck</h2>
     <form method="POST" class="deck-form" action="{% url 'create_deck'%}">
         {% csrf_token %}
-        {{ form.as_p }}
+        {{ form }}
         <button type="submit" class="save btn btn-default">Create</button>
     </form>
 {% endblock %}
