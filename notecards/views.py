@@ -25,7 +25,6 @@ def deck_view(request, pk):
 
 @login_required
 def deck_review(request, pk, card_index=0):
-    # get the cards from a session object or return none
     card_index = int(card_index)
 
     
@@ -36,17 +35,16 @@ def deck_review(request, pk, card_index=0):
 
         test_card = None
         cards = list()
-        #scramble the cards with random.shuffle(x)
+
         for card in card_set:
             cards.append({'front': card.front, 'back': card.back})
             test_card = card
 
+        # TODO: make an extra argument as a boolean to allow for unshuffled or shuffled orders
         random.shuffle(cards)
         request.session['cards'] = cards
     else:
         cards = request.session['cards']
-
-
 
     if card_index >= len(cards):
         # we've reached the end
@@ -57,10 +55,6 @@ def deck_review(request, pk, card_index=0):
     else:
         front = cards[card_index].get('front')
         back = cards[card_index].get('back')
-
-        # now, we have a shuffled cards sequence and a proper index
-
-        # we'll render our important info, which is the cards deck and card_index
         return render(request, 'notecards/deck_review.html', {'front': front,
                                                               'back': back,
                                                               'card_index': card_index,
