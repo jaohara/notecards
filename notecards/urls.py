@@ -8,4 +8,6 @@ urlpatterns =[
     url(r'^deck/(?P<pk>\d+)/remove/$', views.remove_card_from_deck, name='remove_card_from_deck'),
     url(r'^deck/create/$', views.create_deck, name='create_deck'),
     url(r'^deck/(?P<pk>\d+)/delete/$', views.delete_deck, name='delete_deck'),
+    url(r'^deck/(?P<pk>\d+)/review/card/(?P<card_index>\d+)/$', views.deck_review, name='deck_review'),
+    url(r'^flush/$', views.flush_session, name='flush_session')
 ]

@@ -1,0 +1,9 @@
+{% extends 'notecards/base.html' %}
+
+{% block content %}
+    <div class="front">{{front}}</div>
+    <dic class="back">{{back}}</dic>
+
+    <a href="{% url 'deck_review' pk=11 card_index=card_index|add:'1' %}">Next Card</a>
+
+{% endblock %}

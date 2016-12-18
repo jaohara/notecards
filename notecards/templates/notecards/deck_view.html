@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>{{deck.title}}</h1>
+    <a href="{% url 'deck_review' pk=deck.pk card_index=0 %}">Review Deck</a>
     <table class="card-table">
         <tr class="card-table-header">
             <th>Front</th>
