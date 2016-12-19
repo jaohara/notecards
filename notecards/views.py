@@ -6,13 +6,16 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from .models import Tag, Deck, Card
 from .forms import CardForm, DeckForm
+from .utils import reset_session_cards
 
 def deck_list(request):
+    reset_session_cards(request)
     decks = Deck.objects.all()
     form = DeckForm()
     return render(request, 'notecards/deck_list.html', {'decks': decks, 'form': form,})
 
 def deck_view(request, pk):
+    reset_session_cards(request)
     deck = get_object_or_404(Deck, pk=pk)
     cards = Card.objects.filter(deck__title=deck.title)
     form = CardForm()
@@ -29,7 +32,6 @@ def deck_review(request, pk, card_index=0):
 
     
     if 'cards' not in request.session:
-        # get the QuerySet of all cards in the deck
         deck = get_object_or_404(Deck, pk=pk)
         card_set = Card.objects.filter(deck__title=deck.title)
 
@@ -47,9 +49,7 @@ def deck_review(request, pk, card_index=0):
         cards = request.session['cards']
 
     if card_index >= len(cards):
-        # we've reached the end
-        if 'cards' in request.session:
-            del request.session['cards']
+        reset_session_cards(request)
         return redirect('/deck/{}/'.format(pk))
 
     else:
@@ -58,7 +58,8 @@ def deck_review(request, pk, card_index=0):
         return render(request, 'notecards/deck_review.html', {'front': front,
                                                               'back': back,
                                                               'card_index': card_index,
-                                                              'deck_length': len(cards),})
+                                                              'deck_length': len(cards),
+                                                              'pk': pk})
 
 
 #@login_required

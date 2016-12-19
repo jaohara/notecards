@@ -38,6 +38,15 @@
     text-align: center;
 }
 
+.card-form label{
+    display: none;
+}
+
+.card-form {
+    width: 90%;
+    margin: 0 auto;
+}
+
 /* ------------------------------------------------------
     Headers
 ------------------------------------------------------ */
