@@ -1,8 +1,24 @@
 {% extends 'notecards/base.html' %}
 
+{% block menu %}
+    <div class="menu">
+        <span class="deck-review">
+            <a href="{% url 'deck_review' pk=deck.pk card_index=0 %}">Review</a>
+        </span>
+
+        {% if deck.card_count >= 4 %}
+        <span class="deck-quiz">
+            <a href="">Quiz</a>
+        {% else %}
+        <span class="deck-quiz unclickable" title="At least 4 cards are needed to make a Quiz.">Quiz
+        {% endif %}
+        </span>
+    </div>
+{% endblock %}
+
 {% block content %}
     <h1>{{deck.title}}</h1>
-    <a href="{% url 'deck_review' pk=deck.pk card_index=0 %}">Review Deck</a>
+    
     <table class="card-table">
         <tr class="card-table-header">
             <th>Front</th>

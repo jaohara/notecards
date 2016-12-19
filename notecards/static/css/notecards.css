@@ -1,3 +1,14 @@
+/* ------------------------------------------------------
+    notecards.css
+    A stylesheet for the notecards app.
+
+    Written by John O'Hara, 2016
+
+    TODO:
+        - Clean up organization and alphabetize 
+        properties 
+------------------------------------------------------ */
+
 * {
     font-family: 'Fanwood Text', serif;
     font-size: 1.0em;
@@ -15,6 +26,43 @@
 .page-header h1 a{
     text-decoration: none;
     font-size: 1.4em;
+}
+
+.page-header h1{
+    width: 50%;
+}
+
+/* ------------------------------------------------------
+    Menu 
+------------------------------------------------------ */
+
+/*
+    This really needs some work right now. As it is, the
+    tooltip idea isn't working, and each of the nav 
+    header and the menu are taking up their full width
+    of the .page-header container, so they are appearing
+    on different lines. Definitely needs some retooling
+    to figure out how to make this work.
+*/
+
+div.menu{
+    float: right;
+}
+
+.unclickable{
+    display: inline;
+    position: relative;
+}
+
+.deck-quiz .unclickable:hover:before{
+    background: rbga(255,255,255,0.8);
+    border: 1px solid #bbb;
+    content: attr(title);
+    left: 20%;
+    padding: 5px 15px;
+    position: absolute;
+    z-index: 98;
+    width: 220px;
 }
 
 /* ------------------------------------------------------

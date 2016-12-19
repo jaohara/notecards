@@ -4,8 +4,6 @@
     <div class="front">{{front}}</div>
     <dic class="back">{{back}}</dic>
 
-    <!-- Note: PK IS HARD-CODED HERE FOR TESTING! RETURN AND UPDATE ASAP -->
-
     <a href="{% url 'deck_review' pk=pk card_index=card_index|add:'1' %}">Next Card</a>
 
 {% endblock %}
