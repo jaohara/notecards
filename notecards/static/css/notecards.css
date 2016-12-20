@@ -7,11 +7,20 @@
     TODO:
         - Clean up organization and alphabetize 
         properties 
+
+
+    color palette idea: base around rgb(6,133,255);
+
+    rgb(28,37,46)?
 ------------------------------------------------------ */
 
 * {
-    font-family: 'Fanwood Text', serif;
+    font-family: 'Raleway', sans-serif;
     font-size: 1.0em;
+    font-weight: 200;
+    margin: 0;
+    padding: 0;
+    text-shadow: 1px 1px rgba(0,0,0,0.2);
 }
 
 /* ------------------------------------------------------
@@ -19,16 +28,25 @@
 ------------------------------------------------------ */
 
 .page-header{
-    margin-left: 40px;
-    margin-right: 40px;
+    background: rgb(28,37,46);
+    border: 0 0 1px 0 #fff;
+    box-shadow: 0px 1px 4px rgba(0,0,0,0.4);
+    color: #fff;
+    margin: 0px;
+    padding: 15px 35px;
 }
 
 .page-header h1 a{
-    text-decoration: none;
+    color: #fff;
+    font-family: 'Raleway', sans-serif;
     font-size: 1.4em;
+    font-weight: 500;
+    text-decoration: none;
 }
 
 .page-header h1{
+    display: inline-block;
+    margin: 0;
     width: 50%;
 }
 
@@ -46,7 +64,24 @@
 */
 
 div.menu{
+    background: rgb(52,62,71);
+    border-radius: 4px;
+    border: 1px solid rgb(79,92,104);
     float: right;
+    font-size: 2.0em;
+    padding: 0px 10px;
+}
+
+div.menu a{
+    color: #fff;
+    padding: 0px 15px;
+    text-decoration: none;
+    transition: backround .2s;
+}
+
+div.menu a:hover{
+    background: rgb(79,92,104);
+    border-radius: 4px;
 }
 
 .unclickable{
@@ -100,7 +135,8 @@ div.menu{
 ------------------------------------------------------ */
 
 h1, h2, h3, h4, h5 {
-    font-family: 'Quattrocento', serif;
+    font-family: 'Space Mono', monospace;
+    font-weight: bold;
 }
 
 /* ------------------------------------------------------
@@ -126,6 +162,7 @@ a .glyphicon-remove{
 ------------------------------------------------------ */
 
 .deck-table{
+    border-radius: 3px;
     font-size: 1.4em;
     width: 100%;
 }
@@ -145,7 +182,7 @@ a .glyphicon-remove{
 }
 
 
-.deck-table, .deck-table th, .deck-table td{
+.deck-table th, .deck-table td{
     border: 1px solid #bbb;
 }
 

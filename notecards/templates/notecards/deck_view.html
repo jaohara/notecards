@@ -28,11 +28,12 @@
             <tr class="card-table-row">
                 <td class="card-front">{{card.front}}</td> 
                 <td class="card-back">{{card.back}}</td>
+                <!-- temporary change. How do I not have this break the table?
                 <td class="card-remove">
                     <a href="{% url 'remove_card_from_deck' pk=card.pk%}">
                     <span class="glyphicon glyphicon-remove"></span>
                     </a>
-                </td>
+                </td>-->
             </tr>
         {% endfor %}
     </table>
