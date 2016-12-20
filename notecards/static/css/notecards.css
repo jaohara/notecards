@@ -130,6 +130,60 @@ div.menu a:hover{
     margin: 0 auto;
 }
 
+.deck-form{
+    margin: 1.0em auto;
+    width: 90%;
+}
+
+.deck-form label{
+    display: none;
+}
+
+.deck-form input#id_title{
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    font-size: 1.2em;
+    min-height: 50px;
+    padding: .8em;
+    width: 80%;
+}
+
+.deck-form button.save{
+    width: 10%;
+    margin: 0 2%;
+    min-height: 50px;
+    padding: .8em;
+}
+
+/* ------------------------------------------------------
+    Footer
+------------------------------------------------------ */
+
+div.footer{
+    background: #333;
+    bottom: 0;
+    box-shadow: inset 0px 1px 8px rgba(0,0,0,0.4);
+    color: #fff;
+    font-weight: bold;
+    margin: 0px;
+    min-height: 80px;
+    padding: 2.0em;
+    position: relative;
+    width: 100%;
+}
+
+div.footer a{
+    color: #eee;
+}
+
+div.footer-left{
+    float: left;
+}
+
+div.footer-right{
+    float: right;
+}
+
 /* ------------------------------------------------------
     Headers
 ------------------------------------------------------ */
@@ -219,4 +273,43 @@ a .glyphicon-remove{
     padding: 2.6em 1.0em;
     width: 11em;
     background-color: rgba(0,0,0,0.03);
+}
+
+/* ------------------------------------------------------
+    Review CSS
+------------------------------------------------------ */
+
+div.front, div.back{
+    background: rgba(0,0,0,0.0.3);
+    border: 1px solid #bbb;
+    box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
+    float: left;
+    font-size: 1.6em;
+    margin: 5%;
+    padding: 4em 1.0em;
+    text-align: center;
+    width: 40%;
+}
+
+div.review-nav{
+    font-size: 1.4em;
+    margin: 1.5em auto;
+    width: 45%;
+    text-align: center;
+}
+
+div.review-nav a{
+    text-decoration: none;
+}
+
+div.review-nav a:first-child{
+    float: left;
+}
+
+div.review-nav a:last-child{
+    float: right;
+}
+
+div.review-nav span {
+    padding: 0 0.5em;
 }

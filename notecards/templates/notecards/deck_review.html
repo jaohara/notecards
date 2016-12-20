@@ -1,9 +1,30 @@
 {% extends 'notecards/base.html' %}
 
-{% block content %}
-    <div class="front">{{front}}</div>
-    <dic class="back">{{back}}</dic>
+{% load mathfilters %}
 
-    <a href="{% url 'deck_review' pk=pk card_index=card_index|add:'1' %}">Next Card</a>
+{% block content %}
+
+    <div class="front">{{front}}</div>
+    <div class="back">{{back}}</div>
+
+    <div class="review-nav">
+
+        {% if card_index > 0 %}
+        <a class="review-prev" href="{% url 'deck_review' pk=pk card_index=card_index|sub:'1' %}">
+        {% else %}
+        <a class="review-prev">
+        {% endif %}
+        <span class="glyphicon glyphicon-chevron-left"></span>Previous Card</a>
+
+        <a class="review-next" href="{% url 'deck_review' pk=pk card_index=card_index|add:'1' %}">
+        {% if card_index == deck_length|sub:'1' %}
+        Finish
+        {% else %}
+        Next Card
+        {% endif %}
+        <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+
+    </div>
 
 {% endblock %}

@@ -1,4 +1,5 @@
 {% load staticfiles %}
+{% load mathfilters %} 
 <!DOCTYPE html>
 <html>
     <head>
@@ -6,7 +7,7 @@
 
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <link href="https://fonts.googleapis.com/css?family=Raleway:200:500|Space+Mono:700"
+        <link href="https://fonts.googleapis.com/css?family=Raleway:300:500|Space+Mono:700"
             rel="stylesheet" type="text/css">
 
         <!-- H5BP -->
@@ -31,6 +32,15 @@
                     {% block content %}
                     {% endblock %}
                 </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-left">
+            Copyright &copy;2016 John O'Hara
+            </div>
+            <div class="footer-right">
+            <a href="https://github.com/jaohara/notecards">Github Repository</a>
             </div>
         </div>
     </body>
