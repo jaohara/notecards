@@ -2,15 +2,19 @@
 
 {% block menu %}
     <div class="menu">
+        {% if deck.card_count > 1 %}
         <span class="deck-review">
             <a href="{% url 'deck_review' pk=deck.pk card_index=0 %}">Review</a>
+        {% else %}
+        <span class="deck-review unclickable" tooltip="At least 2 cards are needed to review.">Review
+        {% endif %}
         </span>
 
         {% if deck.card_count >= 4 %}
         <span class="deck-quiz">
             <a href="">Quiz</a>
         {% else %}
-        <span class="deck-quiz unclickable" title="At least 4 cards are needed to make a Quiz.">Quiz
+        <span class="deck-quiz unclickable" tooltip="At least 4 cards are needed to make a Quiz.">Quiz
         {% endif %}
         </span>
     </div>
@@ -18,13 +22,21 @@
 
 {% block content %}
     <h1>{{deck.title}}</h1>
+    <div class="deck-wrapper">
+
+    <!--
     
     <table class="card-table">
         <tr class="card-table-header">
             <th>Front</th>
             <th>Back</th>
-        </tr>
+        </tr>-->
         {% for card in cards %}
+
+        <div class="front">{{card.front}}</div>
+        <div class="back">{{card.back}}</div>
+
+        <!--
             <tr class="card-table-row">
                 <td class="card-front">{{card.front}}</td> 
                 <td class="card-back">{{card.back}}</td>
@@ -33,10 +45,14 @@
                     <a href="{% url 'remove_card_from_deck' pk=card.pk%}">
                     <span class="glyphicon glyphicon-remove"></span>
                     </a>
-                </td>-->
-            </tr>
+                </td>
+            </tr>-->
+
+
         {% endfor %}
-    </table>
+    <!--</table>-->
+
+    </div>
 
     <h2>Add a Card</h2>
     <form method="POST" class="card-form" action="{% url 'add_card_to_deck' pk=deck.pk%}">
