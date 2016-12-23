@@ -1,0 +1,15 @@
+{% extends 'notecards/base.html'%}
+
+{% load mathfilters %}
+
+{% block pageheader %} - Quiz{% endblock %}
+
+{% block content %}
+
+    <div class="front">{{question}}</div>
+
+    {% for answer in answers%}
+        {{answer.0}} - 
+        {{answer.1}} <br />
+    {% endfor %}
+{% endblock %}
