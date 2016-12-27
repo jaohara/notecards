@@ -4,12 +4,28 @@
 
 {% block pageheader %} - Quiz{% endblock %}
 
+{% block menu %}
+    <div class="menu">
+        Score:
+         {{quiz_correct}} / {{quiz_attempted}}  -  
+         {{quiz_score}}%
+    </div>
+{% endblock %}
+
 {% block content %}
 
     <div class="front">{{question}}</div>
 
+    <!--- temporary UL to code functionality. Will be 
+    clickable divs as blocks in future-->
+
+    <ul class="temp-quiz-list">
+
     {% for answer in answers%}
-        {{answer.0}} - 
-        {{answer.1}} <br />
+        <li>
+        <a href="{% url 'deck_quiz' pk=pk quiz_index=quiz_index|add:'1' answer_choice=answer.0 %}">{{answer.1}}</a>
+        </li>
     {% endfor %}
+
+    </ul>
 {% endblock %}

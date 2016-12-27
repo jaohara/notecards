@@ -74,6 +74,10 @@ def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
 
     quiz_index = int(quiz_index)
 
+
+    # This will set up our session variables
+    # ---
+    # maybe I should check to make sure quiz_index is also 0 if the quiz doesn't exist
     if 'quiz' not in request.session:
         deck = get_object_or_404(Deck, pk=pk)
         card_set = Card.objects.filter(deck__title=deck.title)
@@ -85,19 +89,46 @@ def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
 
         random.shuffle(quiz)
         request.session['quiz'] = quiz
+        request.session['quiz_questions'] = deck.card_count
+        request.session['quiz_attempted'] = 0
+        request.session['quiz_correct'] = 0
+        request.session['previous_answer'] = quiz[quiz_index].get('pk')
     else:
         quiz = request.session['quiz']
 
     # this should be made to account for finishing the quiz
     # maybe I should save quiz_index as a session variable
     # instead of revealing it via get?
+
+    # also, what about repeating questions by changing the URL manually? should
+    # the quiz object be treated as a queue?
     if quiz_index >= len(quiz):
         reset_session_quiz(request)
         return redirect('/deck/{}/'.format(pk))
 
     else:
+        # first, we need to check if an answer has been submitted. 
+        if answer_choice is not None:
+            # we've submitted an answer, so let's check if it's right.
+            if 'previous_answer' in request.session:
+                request.session['quiz_attempted'] += 1
+                if int(answer_choice) == int(request.session['previous_answer']):
+                    request.session['quiz_correct'] += 1
+
         question = quiz[quiz_index].get('front')
         answers_pk = [quiz[quiz_index].get('pk')]
+        request.session['previous_answer'] = answers_pk[0]
+
+        if 'quiz_attempted' in request.session:
+            quiz_attempted = request.session['quiz_attempted']
+        else:
+            # this is kind of a BS fallback, will be more elegant later
+            quiz_attempted = 0
+        if 'quiz_correct' in request.session:
+            quiz_correct = request.session['quiz_correct']
+        else:
+            # same with this one
+            quiz_correct = 0
 
         # pick randomly
         while len(answers_pk) < 4:
@@ -117,10 +148,19 @@ def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
 
         # now we have answers, which is a list of tuples of (card.pk, card.back)
 
+        if quiz_attempted > 0:
+            quiz_score = quiz_correct / quiz_attempted * 100.00
+            quiz_score = '{:.2f}'.format(quiz_score)
+        else:
+            quiz_score = 0.00
+
         return render(request, 'notecards/deck_quiz.html', {'question': question,
                                                             'answers': answers,
                                                             'quiz_index': quiz_index,
-                                                            'pk': pk,})
+                                                            'pk': pk,
+                                                            'quiz_attempted': quiz_attempted,
+                                                            'quiz_correct': quiz_correct,
+                                                            'quiz_score': quiz_score,})
 
 
 

@@ -10,5 +10,6 @@ urlpatterns =[
     url(r'^deck/(?P<pk>\d+)/delete/$', views.delete_deck, name='delete_deck'),
     url(r'^deck/(?P<pk>\d+)/review/card/(?P<card_index>\d+)/$', views.deck_review, name='deck_review'),
     url(r'^deck/(?P<pk>\d+)/quiz/(?P<quiz_index>\d+)/$', views.deck_quiz, name='deck_quiz'),
+    url(r'^deck/(?P<pk>\d+)/quiz/(?P<quiz_index>\d+)/answer_choice/(?P<answer_choice>\d+)', views.deck_quiz, name='deck_quiz'), 
     url(r'^flush/$', views.flush_session, name='flush_session'),
 ]
