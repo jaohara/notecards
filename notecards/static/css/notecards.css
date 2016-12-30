@@ -133,15 +133,12 @@ div.menu a:hover{
 ------------------------------------------------------ */
 
 div.feedback-container{
-    /* KEEP THIS UNTIL FEEDBACK IS IMPLEMENTED */
-    display: none;
-
     text-align: center;
 }
 
 div.feedback-positive, div.feedback-negative, div.feedback-neutral{
     border-bottom: 1px solid #fff;
-    box-shadow: 0px 1px 4px rgba(0,0,0,0.4);
+    box-shadow: 0px 1px 8px rgba(0,0,0,0.2);
     font-size: 1.4em;
     font-weight: bold;
     padding: .8em 0em;
@@ -150,6 +147,9 @@ div.feedback-positive, div.feedback-negative, div.feedback-neutral{
     /*text-shadow: 1px 1px 1px rgba(0,0,0,.75);*/
 }
 
+div.feedback-none{
+    display: none;
+}
 
 div.feedback-positive{
     background: rgba(161,247,175,1.0);
@@ -448,4 +448,8 @@ div.review-nav a:last-child{
 
 div.review-nav span {
     padding: 0 0.5em;
+}
+
+.review-prev.faded-option{
+    opacity: .3;
 }

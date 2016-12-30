@@ -15,6 +15,19 @@
         <link rel="stylesheet" href="{% static 'css/normalize.css' %}">
         <link rel="stylesheet" href="{% static 'css/notecards.css' %}">
 
+        <!-- favicons, generated with favicomatic -->
+        <link rel="apple-touch-icon-precomposed" 
+            sizes="144x144" href="{% static 'img/apple-touch-icon-144x144.png' %}" />
+        <link rel="apple-touch-icon-precomposed" 
+            sizes="152x152" href="{% static 'img/apple-touch-icon-152x152.png' %}" />
+        <link rel="icon" type="image/png" href="{% static 'img/favicon-32x32.png' %}" 
+            sizes="32x32" />
+        <link rel="icon" type="image/png" href="{% static 'img/favicon-16x16.png' %}" 
+            sizes="16x16" />
+        <meta name="application-name" content="Notecards"/>
+        <meta name="msapplication-TileColor" content="#FFFFFF" />
+        <meta name="msapplication-TileImage" content="{% static 'img/mstile-144x144.png'%}" />
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
         <script src="{% static 'js/notecards-jquery.js' %}"></script>
     </head>
@@ -30,6 +43,10 @@
             {% block feedback %}
             {% endblock %}
 
+            <!-- 
+                these are in here to test formatting, remaining until styling is finalized. 
+            -->
+            <!--
             <div class="feedback-negative">
             Negative feedback!
             </div>
@@ -40,7 +57,7 @@
 
             <div class="feedback-neutral">
             Neutral feedback.
-            </div>
+            </div> -->
         </div>
 
         <div class="content container">

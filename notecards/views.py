@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from .models import Tag, Deck, Card
 from .forms import CardForm, DeckForm
-from .utils import reset_session_cards, reset_session_quiz
+from .utils import reset_session_cards, reset_session_quiz, make_elipsis
 
 def deck_list(request):
     reset_session_quiz(request)
@@ -16,6 +16,21 @@ def deck_list(request):
     return render(request, 'notecards/deck_list.html', {'decks': decks, 'form': form,})
 
 def deck_view(request, pk):
+
+    quiz_results = ""
+    feedback_type = "none"
+
+    # this approach is reason enough to not have the reset_session_ methods as
+    # decorators. Then again, if I made this results thing a decorator too...
+    if 'quiz' in request.session:
+        feedback_type = "neutral"
+        quiz_correct = request.session['quiz_correct']
+        quiz_attempted = request.session['quiz_attempted']
+        quiz_percentage = '{:.2f}'.format((quiz_correct/quiz_attempted)*100)
+        quiz_results = "Results: {} / {}  -  {}%".format(quiz_correct,
+                                                       quiz_attempted,
+                                                       quiz_percentage)
+
     reset_session_quiz(request)
     reset_session_cards(request)
     deck = get_object_or_404(Deck, pk=pk)
@@ -24,9 +39,11 @@ def deck_view(request, pk):
 
     # return to this later, not necessary for first draft
     # tags = Tag.objects.filter()
-    return render(request, 'notecards/deck_view.html', {'deck': deck, 
-                                                        'cards': cards, 
-                                                        'form': form,})
+    return render(request, 'notecards/deck_view.html', {'cards': cards,
+                                                        'deck': deck,
+                                                        'feedback_type': feedback_type, 
+                                                        'form': form,
+                                                        'quiz_results': quiz_results,})
 
 @login_required
 def deck_review(request, pk, card_index=0):
@@ -57,22 +74,22 @@ def deck_review(request, pk, card_index=0):
     else:
         front = cards[card_index].get('front')
         back = cards[card_index].get('back')
-        return render(request, 'notecards/deck_review.html', {'front': front,
-                                                              'back': back,
+        return render(request, 'notecards/deck_review.html', {'back': back,
                                                               'card_index': card_index,
                                                               'deck_length': len(cards),
-                                                              'pk': pk})
+                                                              'front': front,
+                                                              'pk': pk,})
 
-#I'm going to be implementing this in a very redundant manner; it will reuse a
-#lot of code from the quiz_review view. This shared code should be made into
-#a distinct helper method in a later update.
-
-# also, what happens if you jump from review to quiz? You'd be using the same
-# session variable. Maybe I should use 'quiz' instead...
 @login_required
 def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
 
+    # future idea - quiz timer. Save start timestamp, use jquery to update it, submit
+    # with results.
+
     quiz_index = int(quiz_index)
+    question_result = ""
+    feedback_type = "none"
+    feedback_text = ""
 
 
     # This will set up our session variables
@@ -88,6 +105,7 @@ def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
             quiz.append({'front': card.front, 'back': card.back, 'pk': card.pk})
 
         random.shuffle(quiz)
+        request.session['quiz_finished'] = False
         request.session['quiz'] = quiz
         request.session['quiz_questions'] = deck.card_count
         request.session['quiz_attempted'] = 0
@@ -103,7 +121,8 @@ def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
     # also, what about repeating questions by changing the URL manually? should
     # the quiz object be treated as a queue?
     if quiz_index >= len(quiz):
-        reset_session_quiz(request)
+        #reset_session_quiz(request)
+        request.session['quiz_finished'] = True
         return redirect('/deck/{}/'.format(pk))
 
     else:
@@ -112,8 +131,24 @@ def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
             # we've submitted an answer, so let's check if it's right.
             if 'previous_answer' in request.session:
                 request.session['quiz_attempted'] += 1
+
+                answer_card = get_object_or_404(Card, pk=request.session['previous_answer'])
+                answer_front = answer_card.front
+                answer_back = answer_card.back
+
+                feedback_type = "negative"
+                question_result = "Sorry, wrong answer: "
+
                 if int(answer_choice) == int(request.session['previous_answer']):
+                    feedback_type = "positive"
+                    question_result = "Correct!"
                     request.session['quiz_correct'] += 1
+
+                feedback_text = "{} '{}{}' matches with '{}{}'".format(question_result,
+                                                                       answer_front[:25],
+                                                                       make_elipsis(answer_front),
+                                                                       answer_back[:25],
+                                                                       make_elipsis(answer_back))
 
         question = quiz[quiz_index].get('front')
         answers_pk = [quiz[quiz_index].get('pk')]
@@ -156,12 +191,14 @@ def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
         else:
             quiz_score = 0.00
 
-        return render(request, 'notecards/deck_quiz.html', {'question': question,
-                                                            'answers': answers,
-                                                            'quiz_index': quiz_index,
+        return render(request, 'notecards/deck_quiz.html', {'answers': answers,
+                                                            'feedback_type': feedback_type,
+                                                            'feedback_text': feedback_text,
                                                             'pk': pk,
+                                                            'question': question,
                                                             'quiz_attempted': quiz_attempted,
                                                             'quiz_correct': quiz_correct,
+                                                            'quiz_index': quiz_index,
                                                             'quiz_score': quiz_score,})
 
 

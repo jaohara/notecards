@@ -14,9 +14,13 @@
     </div>
 {% endblock %}
 
+{% block feedback %}
+    <div class="feedback-{{feedback_type}}">{{feedback_text}}</div>
+{% endblock %}
+
 {% block content %}
 
-    <!-- jQuery for hotkeys, only in use in quizview. -->
+    <!-- jQuery for quiz hotkeys. -->
     <script src="{% static 'js/notecards-quiz-jquery.js' %}"></script>
     
     <div class="front">{{question}}</div>

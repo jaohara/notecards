@@ -20,6 +20,10 @@
     </div>
 {% endblock %}
 
+{% block feedback %}
+    <div class="feedback-{{feedback_type}}">{{quiz_results}}</div>
+{% endblock %}
+
 {% block content %}
     <h1>{{deck.title}}</h1>
     <div class="deck-wrapper">
