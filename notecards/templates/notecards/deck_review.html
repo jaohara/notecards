@@ -1,11 +1,13 @@
 {% extends 'notecards/base.html' %}
 
 {% load mathfilters %}
+{% load staticfiles %}
 
 {% block pageheader %} - Review{% endblock %}
 
 {% block content %}
 
+    <script src="{% static 'js/notecards-review-jquery.js'%}"></script>
 
     <div class="review-content">
         <div class="front">{{front}}</div>
@@ -15,9 +17,9 @@
     <div class="review-nav">
 
         {% if card_index > 0 %}
-        <a class="review-prev" href="{% url 'deck_review' pk=pk card_index=card_index|sub:'1' %}">
+        <a class="review-prev" first="false" href="{% url 'deck_review' pk=pk card_index=card_index|sub:'1' %}">
         {% else %}
-        <a class="review-prev">
+        <a class="review-prev" first="true">
         {% endif %}
         <span class="glyphicon glyphicon-chevron-left"></span>Previous Card</a>
 

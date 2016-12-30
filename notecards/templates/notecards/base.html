@@ -7,7 +7,7 @@
 
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <link href="https://fonts.googleapis.com/css?family=Raleway:300:500|Space+Mono:700"
+        <link href="https://fonts.googleapis.com/css?family=Raleway:300:500:800|Space+Mono:700"
             rel="stylesheet" type="text/css">
 
         <!-- H5BP -->
@@ -29,6 +29,18 @@
         <div class="feedback-container">
             {% block feedback %}
             {% endblock %}
+
+            <div class="feedback-negative">
+            Negative feedback!
+            </div>
+
+            <div class="feedback-positive">
+            Positive feedback!
+            </div>
+
+            <div class="feedback-neutral">
+            Neutral feedback.
+            </div>
         </div>
 
         <div class="content container">
