@@ -1,10 +1,12 @@
 {% extends 'notecards/base.html'%}
 
 {% load mathfilters %}
+{% load staticfiles %}
 
 {% block pageheader %} - Quiz{% endblock %}
 
 {% block menu %}
+    <!-- <input type="checkbox" class="hotkey-toggle">-->
     <div class="menu">
         Score:
          {{quiz_correct}} / {{quiz_attempted}}  -  
@@ -14,6 +16,9 @@
 
 {% block content %}
 
+    <!-- jQuery for hotkeys, only in use in quizview. -->
+    <script src="{% static 'js/notecards-quiz-jquery.js' %}"></script>
+    
     <div class="front">{{question}}</div>
 
     <!--- temporary UL to code functionality. Will be 
@@ -23,9 +28,12 @@
 
     {% for answer in answers%}
         <li>
-        <a href="{% url 'deck_quiz' pk=pk quiz_index=quiz_index|add:'1' answer_choice=answer.0 %}">{{answer.1}}</a>
+        <a href="{% url 'deck_quiz' pk=pk quiz_index=quiz_index|add:'1' answer_choice=answer.0 %}"
+            class="quiz-answer-{{answer.2}}">{{answer.1}}</a>
         </li>
+
     {% endfor %}
 
     </ul>
+
 {% endblock %}

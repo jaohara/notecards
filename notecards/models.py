@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from .utils import make_elipsis
 
 
 class Tag(models.Model):
@@ -26,7 +27,7 @@ class Deck(models.Model):
             self.save()
 
     def __str__(self):
-        return "{} - Cards: {}".format(self.title, self.card_count)
+        return "{}{} - Cards: {}".format(self.title, make_elipsis(self.title), self.card_count)
 
 class Card(models.Model):
     deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
@@ -54,7 +55,6 @@ class Card(models.Model):
     """
 
     def __str__(self):
-        elipsis = ""
-        if (len(self.front) > 25):
-            elipsis = "..."
-        return "{}{} - in '{}'".format(self.front[:25], elipsis, self.deck.title)
+        return "{}{} - {}{} in '{}{}'".format(self.front[:25], make_elipsis(self.front), 
+                                              self.back[:25], make_elipsis(self.back), 
+                                              self.deck.title[:25], make_elipsis(self.deck.title))

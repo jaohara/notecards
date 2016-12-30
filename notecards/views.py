@@ -140,11 +140,13 @@ def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
         random.shuffle(answers_pk)
 
         answers = list()
+        answers_index = 0
 
         for answer in answers_pk:
             answer_back = Card.objects.get(pk=answer).back
 
-            answers.append((int(answer), answer_back))
+            answers.append((int(answer), answer_back, answers_index))
+            answers_index += 1
 
         # now we have answers, which is a list of tuples of (card.pk, card.back)
 
