@@ -76,8 +76,13 @@ div.menu{
     border-radius: 4px;
     border: 1px solid rgb(79,92,104);
     float: right;
-    font-size: 2.0em;
+    font-size: 1.4em;
+    margin: 0 0 0 1.0em;
     padding: 0px 10px;
+}
+
+div.menu.login{
+
 }
 
 div.menu a{
@@ -356,6 +361,41 @@ table.deck-table{
     padding: 2.6em 1.0em;
     width: 11em;
     background-color: rgba(0,0,0,0.03);
+}
+
+/* ------------------------------------------------------
+    Login Page
+------------------------------------------------------ */
+
+div.login-wrapper{
+    border: 1px solid #bbb;
+    box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
+    margin: 2.0em auto;
+    padding: 2.0em;
+    width: 45%;
+}
+
+div.login-wrapper form{
+    width: 100%;
+}
+
+div.login-wrapper input#id_username, .login-wrapper input#id_password{
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    font-size: 1.2em;
+    margin-left: 1.0em;
+    min-height: 50px;
+    padding: .8em;
+    width: 90%;
+}
+
+div.login-wrapper input.login-submit{
+    background: rgb(28,37,46);
+    color: #fff;
+    margin-left: 1.9em;
+    min-height: 50px;
+    padding: .8em;
+    width: 66%; 
 }
 
 /* ------------------------------------------------------

@@ -1,0 +1,22 @@
+{% extends "notecards/base.html" %}
+
+{% block content %}
+
+<div class="login-wrapper">
+
+<h1>Login</h1>
+
+{% if form.errors %}
+    <p>Your username and password didn't match.</p>
+{% endif %}
+
+    <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+        <p><span class="glyphicon glyphicon-user"></span>{{form.username}}</p>
+        <p><span class="glyphicon glyphicon-lock"></span>{{form.password}}</p>
+        <p><input class="login-submit save btn btn-default" type="submit" value="Login"></p>
+    </form>
+
+</div>
+
+{% endblock %}

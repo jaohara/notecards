@@ -19,7 +19,7 @@
             <td class="centered-cell">{{deck.author|capfirst}}</td>
             <td>{{deck.created_date}}</td>
             <td class="centered-cell">
-                <a href="{% url 'delete_deck' pk=deck.pk %}">
+                <a class="delete-link" href="{% url 'delete_deck' pk=deck.pk %}">
                     <span class="glyphicon glyphicon-remove"></span>
                 </a>
             </td>
