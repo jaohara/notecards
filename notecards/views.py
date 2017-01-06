@@ -1,10 +1,11 @@
 import random
 
-from django.shortcuts import render, get_object_or_404, redirect
-from django.utils import timezone
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login
 from django.core import serializers
+from django.shortcuts import render, get_object_or_404, redirect, render_to_response
+from django.template import RequestContext
+from django.utils import timezone
 
 from django.contrib.auth.models import User
 from .models import Tag, Deck, Card
@@ -12,17 +13,47 @@ from .forms import CardForm, DeckForm, DeckEditForm, UserForm
 
 from .utils import reset_session_cards, reset_session_quiz, make_elipsis
 
-def deck_list(request, sort_method="created_date"):
+
+# This might belong in a differen views.py, but it's here for now.
+def handler404(request):
+    response = render_to_response('404.html', {},
+                                  context_instance=RequestContext(request))
+
+    response.status_code = 404
+    return response
+
+def test_404(request):
+    # solely to render and style the 404 page
+    return render(request, '404.html', {})
+
+def handler500(request):
+    reponse = render_to_response('500.html', {},
+                                 context_instance=RequestContext(request))
+
+    request.status_code = 500
+    return respose
+
+def deck_list(request, sort_method="created_date", sort_order="ascending"):
+    # Bug: Author isn't sorting alphabetically, it's sorting by author pk
+
     accepted_methods = ["created_date", "author", "title", "card_count"]
+
+    order_switch = ""
+
+    if sort_order == "descending":
+        order_switch = "-"
 
     if sort_method not in accepted_methods:
         sort_method = "created_date"
 
     reset_session_quiz(request)
     reset_session_cards(request)
-    decks = Deck.objects.order_by(sort_method)
+    decks = Deck.objects.order_by("{}{}".format(order_switch,sort_method))
     form = DeckForm()
-    return render(request, 'notecards/deck_list.html', {'decks': decks, 'form': form,})
+    return render(request, 'notecards/deck_list.html', {'decks': decks, 
+                                                        'form': form,
+                                                        'sort_method': sort_method,
+                                                        'sort_order': sort_order,})
 
 def deck_view(request, pk):
 
@@ -43,7 +74,7 @@ def deck_view(request, pk):
     reset_session_quiz(request)
     reset_session_cards(request)
     deck = get_object_or_404(Deck, pk=pk)
-    cards = Card.objects.filter(deck__title=deck.title)
+    cards = Card.objects.filter(deck__pk=deck.pk)
     form = CardForm()
 
     

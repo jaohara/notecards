@@ -1,9 +1,15 @@
 from django.conf.urls import url
 from . import views
 
+# previous regex (too generic)
+# url(r'^(?P<sort_method>(\w+))/sort/(?P<sort_order>\w+)/$', views.deck_list, name='deck_list'),
+
 urlpatterns =[
     url(r'^$', views.deck_list, name='deck_list'),
-    url(r'^(?P<sort_method>\w+)$', views.deck_list, name='deck_list'),
+    url(r'^(?P<sort_method>(author|title|created_date|card_count))/$', 
+        views.deck_list, name='deck_list'),
+    url(r'^(?P<sort_method>(author|title|created_date|card_count))/sort/(?P<sort_order>(ascending|descending))/$', 
+        views.deck_list, name='deck_list'),
 
     url(r'^accounts/create/$', views.create_user, name='create_user'),
     url(r'^accounts/(?P<pk>\d+)/$', views.user_profile, name='user_profile'),
@@ -23,4 +29,7 @@ urlpatterns =[
 
     #this... probably shouldn't be in a release 
     url(r'^flush/$', views.flush_session, name='flush_session'),
+
+    #nor this... easy way to test 404s
+    url(r'^404/$', views.test_404, name='404'),
 ]

@@ -69,9 +69,12 @@
     <div class="deck-wrapper">
 
         {% for card in cards %}
+        <div class="card-wrapper">
 
-        <div class="front">{{card.front}}</div>
-        <div class="back">{{card.back}}</div>
+            <div class="front">{{card.front}}</div>
+            <div class="back">{{card.back}}</div>
+
+        </div>
 
         <!--<a href="{% url 'remove_card_from_deck' pk=card.pk%}">
             <span class="glyphicon glyphicon-remove"></span>-->

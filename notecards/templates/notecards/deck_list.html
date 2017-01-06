@@ -5,10 +5,34 @@
     <table class="deck-table">
 
         <tr class="deck-table-header">
-            <th><a href="{% url 'deck_list' sort_method='title'%}">Deck</a></th>
+            <!-- this... is kind of gross right now, but bear with me -->
+            {% if sort_method == 'title' and sort_order == 'descending'%}
+            <th><a href="{% url 'deck_list' sort_method='title' sort_order='ascending'%}">Deck</a></th>
+            {% else %}
+            <th><a href="{% url 'deck_list' sort_method='title' sort_order='descending'%}">Deck</a></th>
+            {% endif %}
+
+            {% if sort_method == 'card_count' and sort_order == 'descending'%}
+            <th><a href="{% url 'deck_list' sort_method='card_count' sort_order='ascending'%}">Cards</a></th>
+            {% else %}
+            <th><a href="{% url 'deck_list' sort_method='card_count' sort_order='descending'%}">Cards</a></th>
+            {% endif %}
+
+            {% if sort_method == 'author' and sort_order == 'descending'%}
+            <th><a href="{% url 'deck_list' sort_method='author' sort_order='ascending'%}">Author</a></th>
+            {% else %}
+            <th><a href="{% url 'deck_list' sort_method='author' sort_order='descending'%}">Author</a></th>
+            {% endif %}
+
+            {% if sort_method == 'created_date' and sort_order == 'descending'%}
+            <th><a href="{% url 'deck_list' sort_method='created_date' sort_order='ascending'%}">Created</a></th>
+            {% else %}
+            <th><a href="{% url 'deck_list' sort_method='created_date' sort_order='descending'%}">Created</a></th>
+            {% endif %}
+            <!--
             <th><a href="{% url 'deck_list' sort_method='card_count'%}">Cards</a></th>
             <th><a href="{% url 'deck_list' sort_method='author'%}">Author</a></th>
-            <th><a href="{% url 'deck_list' sort_method='created_date'%}">Created</a></th>
+            <th><a href="{% url 'deck_list' sort_method='created_date'%}">Created</a></th>-->
             <th>Remove?</th>
         </tr>
 
@@ -26,7 +50,8 @@
                     <span class="glyphicon glyphicon-remove"></span>
                 </a>
                 {% else %}
-                <span class="glyphicon glyphicon-lock"></span>
+                <span class="glyphicon glyphicon-lock unclickable" 
+                    tooltip="You don't have permission to delete this deck."></span>
                 {% endif %}
             </td>
         </tr>

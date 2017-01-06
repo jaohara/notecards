@@ -1,0 +1,16 @@
+{% extends 'notecards/base.html' %}
+
+{% block content %}
+    <div class="http-error-wrapper">
+        <div class="error-warning-sign">
+            <span class="glyphicon glyphicon-warning-sign"></span>
+        </div>
+
+        <div class="error-content">
+            {% block error_message %}
+            <h1>404: Page Not Found</h1>
+            <p>Sorry, but the page you were looking for doesn't exist :(</p>
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}

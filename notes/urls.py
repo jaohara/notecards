@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib.auth import views
+from django.views.defaults import page_not_found
 
 from django.contrib import admin
 

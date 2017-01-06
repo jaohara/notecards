@@ -79,7 +79,9 @@ div.menu.login{
 
 div.menu a{
     color: #fff;
-    padding: 0px 15px;
+    display: inline-block;
+    margin-right: 1.0em;
+    padding: 0px .25em;
     text-decoration: none;
     transition: backround .2s;
 }
@@ -91,6 +93,7 @@ div.menu a:hover{
 
 img.user-avatar{
     height: 64px;
+    margin-right: 1.0em;
     width: 64px;
 }
 
@@ -163,6 +166,7 @@ div.deck-meta div.deck-controls a{
     border-radius: 5px;
     content: attr(tooltip);
     color: #fff;
+    font-family: 'Raleway', sans-serif;
     font-size: 0.6em;
     padding: 5px 15px;
     position: absolute;
@@ -362,7 +366,7 @@ table.deck-table{
 
 .deck-table a{
     display: block;
-    padding: .6em .3em .6em .6em;
+    padding: .6em .6em .6em .6em;
     text-decoration: none;
 }
 
@@ -390,7 +394,7 @@ table.deck-table{
     text-align: center;
 }
 
-.delete-link.glyphicon-lock{
+td span.glyphicon-lock{
     color: rgba(0,0,0,0.4);
 }
 
@@ -438,11 +442,15 @@ div.deck-warning{
     background-color: rgba(0,0,0,0.03);
 }
 
+div.deck-wrapper, div.card-wrapper{
+    overflow: auto;
+}
+
 /* ------------------------------------------------------
     Login Page & Deck Edit Forms 
 ------------------------------------------------------ */
 
-div.login-wrapper, div.deck-edit-wrapper, div.user-profile-wrapper{
+div.login-wrapper, div.deck-edit-wrapper, div.user-profile-wrapper, div.http-error-wrapper{
     border: 1px solid #bbb;
     box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
     margin: 2.0em auto;
@@ -566,6 +574,37 @@ div.review-nav span {
 
 .review-prev.faded-option{
     opacity: .3;
+}
+
+/* ------------------------------------------------------
+    HTTP Error Pages
+------------------------------------------------------ */
+
+div.http-error-wrapper{
+    font-size: 1.4em;
+    overflow: auto;
+    width: 80%;    
+}
+
+div.error-warning-sign{
+    float: left;
+    font-size: 3.0em;
+    text-align: center;
+    width: 20%;
+}
+
+div.error-warning-sign span.glyphicon.glyphicon-warning-sign{
+    color: rgba(207, 50, 53, .8);
+    text-shadow: 2px 2px 0px rgba(255,189,191,1.0);
+}
+
+div.error-content{
+    float: left;
+    width: 80%;
+}
+
+div.error-content h1{
+    margin-top: 0px;
 }
 
 /* ------------------------------------------------------
