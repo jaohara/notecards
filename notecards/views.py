@@ -3,9 +3,13 @@ import random
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
 from django.core import serializers
+
+from django.contrib.auth.models import User
 from .models import Tag, Deck, Card
-from .forms import CardForm, DeckForm
+from .forms import CardForm, DeckForm, DeckEditForm, UserForm
+
 from .utils import reset_session_cards, reset_session_quiz, make_elipsis
 
 def deck_list(request):
@@ -36,6 +40,8 @@ def deck_view(request, pk):
     deck = get_object_or_404(Deck, pk=pk)
     cards = Card.objects.filter(deck__title=deck.title)
     form = CardForm()
+
+    
 
     # return to this later, not necessary for first draft
     # tags = Tag.objects.filter()
@@ -105,6 +111,7 @@ def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
             quiz.append({'front': card.front, 'back': card.back, 'pk': card.pk})
 
         random.shuffle(quiz)
+        request.session['quiz_name'] = deck.title
         request.session['quiz_finished'] = False
         request.session['quiz'] = quiz
         request.session['quiz_questions'] = deck.card_count
@@ -192,6 +199,7 @@ def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
             quiz_score = 0.00
 
         return render(request, 'notecards/deck_quiz.html', {'answers': answers,
+                                                            'deck_title': request.session['quiz_name'],
                                                             'feedback_type': feedback_type,
                                                             'feedback_text': feedback_text,
                                                             'pk': pk,
@@ -228,6 +236,29 @@ def delete_deck(request, pk):
     return redirect('/')
 
 @login_required
+def edit_deck(request, pk):
+    deck = get_object_or_404(Deck, pk=pk)
+
+    if request.method == "POST":
+        form = DeckEditForm(request.POST or None, instance=deck)
+        if form.is_valid():
+            form.save()
+            return redirect('deck_view', pk=pk)
+
+    else:
+        #if request.user.is_authenticated():
+            #username = request.user
+            #if deck.author == username:
+                # allow edit
+        form = DeckEditForm(initial={'title': deck.title, 
+                                         'description': deck.description})
+            # is this really it?
+        render(request, 'notecards/deck_edit.html', {'deck': deck,
+                                                         'form': form,})
+
+        #return redirect('deck_view', pk=deck.pk)
+
+@login_required
 def add_card_to_deck(request, pk):
     if request.method == "POST":
         deck = get_object_or_404(Deck, pk=pk)
@@ -248,3 +279,20 @@ def remove_card_from_deck(request, pk):
     card.delete()
     deck.remove_card()
     return redirect('deck_view', pk=deck.pk)
+
+def create_user(request):
+    if request.method == "POST":
+        # here's where we handle the submitted data
+        form = UserForm(request.POST)
+        if form.is_valid():
+            # **form.cleaned_data retrieves all keyword arguments from the form
+            new_user = User.objects.create_user(**form.cleaned_data)
+            login(request, new_user)
+            return redirect('/')
+
+    else:
+        form = UserForm()
+
+    return render(request, 'registration/create_user.html', {'form': form,})
+
+

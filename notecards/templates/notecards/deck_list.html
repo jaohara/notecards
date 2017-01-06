@@ -19,19 +19,25 @@
             <td class="centered-cell">{{deck.author|capfirst}}</td>
             <td>{{deck.created_date}}</td>
             <td class="centered-cell">
+                {% if user.is_authenticated and user == deck.author %}
                 <a class="delete-link" href="{% url 'delete_deck' pk=deck.pk %}">
                     <span class="glyphicon glyphicon-remove"></span>
                 </a>
+                {% else %}
+                <span class="glyphicon glyphicon-lock"></span>
+                {% endif %}
             </td>
         </tr>
         {% endfor %}
 
     </table>
 
+    {% if user.is_authenticated %}
     <h2>Create a Deck</h2>
     <form method="POST" class="deck-form" action="{% url 'create_deck'%}">
         {% csrf_token %}
         {{ form }}
         <button type="submit" class="save btn btn-default">Create</button>
     </form>
+    {% endif %}
 {% endblock %}

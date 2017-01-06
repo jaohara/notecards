@@ -15,6 +15,8 @@ def reset_session_cards(request):
 def reset_session_quiz(request):
     if 'quiz' in request.session:
         del request.session['quiz']
+    if 'quiz_name' in request.session:
+        del request.session['quiz_name']
     if 'quiz_questions' in request.session:
         del request.session['quiz_questions']
     if 'previous_answer' in request.session:

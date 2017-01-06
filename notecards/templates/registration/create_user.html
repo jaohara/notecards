@@ -1,0 +1,28 @@
+{% extends 'notecards/base.html' %}
+
+{% block content %}
+
+<div class="login-wrapper">
+
+<h1>Create an Account</h1>
+
+{%if form.errors %}
+    <p>There was an error with the creation of this account.</p>
+    {{form.errors}}
+{% endif %}
+
+    <!--- 
+        This... shares too much with the login.html template. Maybe I should 
+        have them both extend from a central template?
+    -->
+    <form method="post" action="{% url 'create_user'%}">
+    {% csrf_token %}
+        <p><span class="glyphicon glyphicon-user"></span>{{form.username}}</p>
+        <p><span class="glyphicon glyphicon-lock"></span>{{form.password}}</p>
+        <p><span class="glyphicon glyphicon-envelope"></span>{{form.email}}</p>
+        <p><input class="login-submit save btn btn-default" type="submit" value="Create"></p>
+    </form>
+
+</div>
+
+{% endblock %}

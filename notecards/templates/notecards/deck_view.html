@@ -1,6 +1,6 @@
 {% extends 'notecards/base.html' %}
 
-{% block menu %}
+{% block menu %}<!--
     <div class="menu">
         {% if deck.card_count > 1 %}
         <span class="deck-review">
@@ -16,7 +16,7 @@
         {% else %}
         <span class="deck-quiz unclickable" tooltip="At least 4 cards are needed to make a Quiz.">Quiz
         {% endif %}
-        </span>
+        </span>-->
     </div>
 {% endblock %}
 
@@ -25,43 +25,65 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{deck.title}}</h1>
+    <div class="deck-meta">
+
+        <h1>{{deck.title}}</h1>
+        <div class="deck-controls">
+            {% if user == deck.author %}
+            <a href="{% url 'edit_deck' pk=deck.pk %}"><span class="deck-edit">Edit</span></a>
+            {% endif %}
+            {% if deck.card_count > 1 %}
+            <a href="{% url 'deck_review' pk=deck.pk card_index=0 %}">
+                <span class="deck-review">Review</span>
+            </a>
+            {% else %}
+            <span class="deck-review unclickable" tooltip="At least 2 cards are needed to review.">Review</span>
+            {% endif %}
+
+            {% if deck.card_count >= 4 %}
+            <a href="{% url 'deck_quiz' pk=deck.pk quiz_index=0 %}">
+                <span class="deck-quiz">Quiz</span>
+            </a>
+            {% else %}
+            <span class="deck-quiz unclickable" tooltip="At least 4 cards are needed to make a Quiz.">Quiz</span>
+            {% endif %}
+        </div>
+
+        <p><span class="deck-origin">Created by {{deck.author}} on {{deck.created_date}}</span><p>
+
+
+        {% if deck.description|length > 0 %}
+        <p class="deck-description">{{deck.description}}</p>
+        {% endif %}
+    </div>
     <div class="deck-wrapper">
 
-    <!--
-    
-    <table class="card-table">
-        <tr class="card-table-header">
-            <th>Front</th>
-            <th>Back</th>
-        </tr>-->
         {% for card in cards %}
 
         <div class="front">{{card.front}}</div>
         <div class="back">{{card.back}}</div>
 
-        <!--
-            <tr class="card-table-row">
-                <td class="card-front">{{card.front}}</td> 
-                <td class="card-back">{{card.back}}</td>
-                <!-- temporary change. How do I not have this break the table?
-                <td class="card-remove">
-                    <a href="{% url 'remove_card_from_deck' pk=card.pk%}">
-                    <span class="glyphicon glyphicon-remove"></span>
-                    </a>
-                </td>
-            </tr>-->
+        <!--<a href="{% url 'remove_card_from_deck' pk=card.pk%}">
+            <span class="glyphicon glyphicon-remove"></span>-->
+
+        {% empty %}
+
+        <div class="deck-warning">
+            <p><span class="glyphicon glyphicon-info-sign"></span> This deck doesn't contain any cards.</p>
+        </div>
 
 
         {% endfor %}
-    <!--</table>-->
+
 
     </div>
 
+    {% if user.is_authenticated %}
     <h2>Add a Card</h2>
     <form method="POST" class="card-form" action="{% url 'add_card_to_deck' pk=deck.pk%}">
         {% csrf_token %}
         {{ form }}
         <button type="submit" class="save btn btn-default">Add to Deck</button>
     </form>
+    {% endif %}
 {% endblock %}

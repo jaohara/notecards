@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 from django.utils import timezone
 from .utils import make_elipsis
 
@@ -11,10 +12,13 @@ class Tag(models.Model):
 
 class Deck(models.Model):
     author = models.ForeignKey('auth.User')
-    title = models.CharField(max_length=200)
-    created_date = models.DateTimeField(default=timezone.now)
     card_count = models.PositiveIntegerField(default=0)
+    created_date = models.DateTimeField(default=timezone.now)
+    description = models.TextField(blank=True, default="", max_length=800)
+    modified_date = models.DateTimeField(default=timezone.now)
     tags = models.ManyToManyField(Tag, blank=True)
+    title = models.CharField(max_length=200)
+    permitted_users = models.ManyToManyField(User, blank=True, related_name="editors")
 
     # should this be called by the Card model on creation or by the view that creates it?
     def add_card(self):
@@ -25,6 +29,10 @@ class Deck(models.Model):
         if self.card_count > 0:
             self.card_count -= 1
             self.save()
+
+    def log_modification(self):
+        self.modified_date = timezone.now
+        self.save()
 
     def __str__(self):
         return "{}{} - Cards: {}".format(self.title, make_elipsis(self.title), self.card_count)
@@ -58,3 +66,16 @@ class Card(models.Model):
         return "{}{} - {}{} in '{}{}'".format(self.front[:25], make_elipsis(self.front), 
                                               self.back[:25], make_elipsis(self.back), 
                                               self.deck.title[:25], make_elipsis(self.deck.title))
+"""
+    I don't really know how to use this - there's a setting called AUTH_PROFILE_MODEL, but
+    it seems that I can't use this setting after I've already created my database schema? 
+    I'm keeping this here for now, but it doesn't really have any function.
+"""
+class UserProfile(models.Model):
+    user = models.OneToOneField(User)
+    # this could probably be extended to allow user uploaded images, but let's keep
+    # it simple for now.
+
+    # 1-4 for one of the prefab avatars. They are located in the static directory,
+    # named notecards-user-icon-x.png
+    avatar = models.PositiveIntegerField(default=1)
