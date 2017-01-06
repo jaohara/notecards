@@ -242,21 +242,24 @@ def edit_deck(request, pk):
     if request.method == "POST":
         form = DeckEditForm(request.POST or None, instance=deck)
         if form.is_valid():
+            # is this too many hits to the database?
             form.save()
+            deck.log_modification()
+            deck.save()
             return redirect('deck_view', pk=pk)
 
     else:
-        #if request.user.is_authenticated():
-            #username = request.user
-            #if deck.author == username:
-                # allow edit
-        form = DeckEditForm(initial={'title': deck.title, 
-                                         'description': deck.description})
-            # is this really it?
-        render(request, 'notecards/deck_edit.html', {'deck': deck,
-                                                         'form': form,})
+        if request.user.is_authenticated():
+            username = request.user
+            if deck.author == username:
+                form = DeckEditForm(initial={'title': deck.title, 
+                                             'description': deck.description})
 
-        #return redirect('deck_view', pk=deck.pk)
+                return render(request, 'notecards/deck_edit.html', {'deck': deck,
+                                                                    'form': form,
+                                                                    'pk': pk,})
+        else:
+            return redirect('deck_view', pk=deck.pk)
 
 @login_required
 def add_card_to_deck(request, pk):

@@ -1,6 +1,6 @@
 {% extends 'notecards/base.html' %}
 
-{% block 'content' %}
+{% block content %}
 
 <div class="deck-edit-wrapper">
 <h1>Edit Deck</h1>
@@ -10,7 +10,7 @@
     {{form.errors}}
 {% endif %}
 
-    <form method="post" action="{% url 'edit_deck' %}">
+    <form method="post" action="{% url 'edit_deck' pk=pk %}">
     {% csrf_token %}
         <p><!--
             <input type="text" class="required" 
@@ -28,7 +28,8 @@
             {{form.description}}
         </p>
 
-        <p><input class="save btn btn-default" type="submit" value="Save Modifications"></p>
+        <p><input class="edit-submit save btn btn-default" type="submit" 
+            value="Save Modifications"></p>
     </form>
 
 </div>

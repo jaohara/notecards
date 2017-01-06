@@ -147,9 +147,9 @@ div.deck-meta p{
 div.deck-meta p span.deck-origin{
     background: rgba(0,0,0,0.1);
     border-radius: 4px;
-    color: rgba(0,0,0,0.7);
-    padding: .4em;
-    font-size: 0.9em;    
+    color: rgba(0,0,0,1.0);
+    font-size: 0.8em;  
+    padding: .4em;  
 }
 
 div.deck-meta h1{
@@ -169,6 +169,8 @@ div.deck-meta div.deck-controls{
 
 div.deck-meta div.deck-controls a{
     text-decoration: none;
+    display: inline-block;
+    margin: 0em .5em;
 }
 
 /* ------------------------------------------------------
@@ -432,10 +434,10 @@ div.deck-warning{
 }
 
 /* ------------------------------------------------------
-    Login Page
+    Login Page & Deck Edit Forms 
 ------------------------------------------------------ */
 
-div.login-wrapper{
+div.login-wrapper, div.deck-edit-wrapper{
     border: 1px solid #bbb;
     box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
     margin: 2.0em auto;
@@ -443,11 +445,17 @@ div.login-wrapper{
     width: 45%;
 }
 
+div.deck-edit-wrapper{
+    width: 75%;
+}
+
+
 div.login-wrapper form{
     width: 100%;
 }
 
-.login-wrapper input#id_username, .login-wrapper input#id_password, .login-wrapper input#id_email{
+.login-wrapper input#id_username, .login-wrapper input#id_password, .login-wrapper input#id_email,
+.deck-edit-wrapper input#id_title, div.deck-edit-wrapper textarea#id_description{
     border: 1px solid #bbb;
     border-radius: 5px;
     font-size: 1.2em;
@@ -457,7 +465,7 @@ div.login-wrapper form{
     width: 90%;
 }
 
-div.login-wrapper input.login-submit{
+div.login-wrapper input.login-submit, div.deck-edit-wrapper input.edit-submit{
     background: rgb(28,37,46);
     color: #fff;
     margin-left: 1.9em;
