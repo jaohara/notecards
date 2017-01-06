@@ -5,10 +5,10 @@
     <table class="deck-table">
 
         <tr class="deck-table-header">
-            <th>Deck</th>
-            <th>Cards</th>
-            <th>Author</th>
-            <th>Created</th>
+            <th><a href="{% url 'deck_list' sort_method='title'%}">Deck</a></th>
+            <th><a href="{% url 'deck_list' sort_method='card_count'%}">Cards</a></th>
+            <th><a href="{% url 'deck_list' sort_method='author'%}">Author</a></th>
+            <th><a href="{% url 'deck_list' sort_method='created_date'%}">Created</a></th>
             <th>Remove?</th>
         </tr>
 
@@ -16,7 +16,9 @@
         <tr class="deck-table-row">
             <td><a href="{% url 'deck_view' pk=deck.pk %}">{{deck.title}}</a></td>
             <td class="centered-cell">{{deck.card_count}}</td>
-            <td class="centered-cell">{{deck.author|capfirst}}</td>
+            <td class="centered-cell">
+                <a href="{% url 'user_profile' pk=deck.author.pk%}">{{deck.author|capfirst}}</a>
+            </td>
             <td>{{deck.created_date}}</td>
             <td class="centered-cell">
                 {% if user.is_authenticated and user == deck.author %}

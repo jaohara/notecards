@@ -12,10 +12,15 @@ from .forms import CardForm, DeckForm, DeckEditForm, UserForm
 
 from .utils import reset_session_cards, reset_session_quiz, make_elipsis
 
-def deck_list(request):
+def deck_list(request, sort_method="created_date"):
+    accepted_methods = ["created_date", "author", "title", "card_count"]
+
+    if sort_method not in accepted_methods:
+        sort_method = "created_date"
+
     reset_session_quiz(request)
     reset_session_cards(request)
-    decks = Deck.objects.all()
+    decks = Deck.objects.order_by(sort_method)
     form = DeckForm()
     return render(request, 'notecards/deck_list.html', {'decks': decks, 'form': form,})
 
@@ -242,10 +247,9 @@ def edit_deck(request, pk):
     if request.method == "POST":
         form = DeckEditForm(request.POST or None, instance=deck)
         if form.is_valid():
-            # is this too many hits to the database?
             form.save()
-            deck.log_modification()
-            deck.save()
+            #deck.log_modification()
+            #deck.save()
             return redirect('deck_view', pk=pk)
 
     else:
@@ -299,3 +303,29 @@ def create_user(request):
     return render(request, 'registration/create_user.html', {'form': form,})
 
 
+
+# I don't know if you need to be logged in for any of this, but it would
+# probably be the difference between viewing a profile and editing your own
+
+@login_required
+def user_profile(request, pk):
+    selected_user = get_object_or_404(User, pk=pk)
+    decks = Deck.objects.filter(author=selected_user.pk)
+
+    return render(request, 'user_profiles/user_profile.html', {'selected_user': selected_user,
+                                                               'decks': decks,})
+
+@login_required
+def user_stats(request, pk):
+    # placeholder
+    return redirect('/')
+
+@login_required
+def user_decks(request, pk):
+    # placeholder
+    return redirect('/')
+
+@login_required
+def user_list(request):
+    # placeholder
+    return redirect('/')

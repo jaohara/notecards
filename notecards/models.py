@@ -70,6 +70,8 @@ class Card(models.Model):
     I don't really know how to use this - there's a setting called AUTH_PROFILE_MODEL, but
     it seems that I can't use this setting after I've already created my database schema? 
     I'm keeping this here for now, but it doesn't really have any function.
+
+    This should also have stats, right?
 """
 class UserProfile(models.Model):
     user = models.OneToOneField(User)

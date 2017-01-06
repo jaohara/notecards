@@ -2,7 +2,7 @@
     notecards.css
     A stylesheet for the notecards app.
 
-    Written by John O'Hara, 2016
+    Written by John O'Hara, 2016-2017
 
     TODO:
         - Clean up organization and alphabetize 
@@ -89,31 +89,9 @@ div.menu a:hover{
     border-radius: 4px;
 }
 
-.unclickable{
-    color: rgba(255,255,255,0.4);
-    display: inline;
-    padding: 0px 15px;
-    position: relative;
-}
-
-.unclickable:hover:after{
-    background: rgba(0,0,0,0.8);
-    border-radius: 5px;
-    content: attr(tooltip);
-    color: #fff;
-    font-size: 0.45em;
-    padding: 5px 15px;
-    position: absolute;
-    right: 0px;
-    top: 60px;
-    width: 280px;
-    z-index: 98;
-}
-
 img.user-avatar{
     height: 64px;
     width: 64px;
-
 }
 
 /* ------------------------------------------------------
@@ -171,6 +149,28 @@ div.deck-meta div.deck-controls a{
     text-decoration: none;
     display: inline-block;
     margin: 0em .5em;
+}
+
+.unclickable{
+    color: rgba(0,75,107,0.3);
+    display: inline;
+    padding: 0px 15px;
+    position: relative;
+}
+
+.unclickable:hover:after{
+    background: rgba(0,0,0,0.8);
+    border-radius: 5px;
+    content: attr(tooltip);
+    color: #fff;
+    font-size: 0.6em;
+    padding: 5px 15px;
+    position: absolute;
+    right: 0px;
+    top: 40px;
+    text-align: left;
+    width: 260px;
+    z-index: 98;
 }
 
 /* ------------------------------------------------------
@@ -324,7 +324,7 @@ h1, h2, h3, h4, h5 {
 ------------------------------------------------------ */
 
 a{
-    color: #004B6B;
+    color: rgba(0,75,107,1.0);
     text-decoration: underline;
 }
 
@@ -381,6 +381,11 @@ table.deck-table{
     /*padding: .6em .3em .6em .6em;*/
 }
 
+.deck-table th a{
+    color: rgba(0,0,0,1.0);
+    padding: 0;
+}
+
 .deck-table-row td:last-child{
     text-align: center;
 }
@@ -394,16 +399,16 @@ table.deck-table{
 ------------------------------------------------------ */
 
 div.deck-warning{
-    background: rgba(0,0,0,0.1);
+    background: rgba(0,0,0,0.03);
     border: 1px solid #bbb;
-    box-shadow: 0px 6px 10px rgba(0,0,0,0.05f);
+    box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
     color: rgba(0,0,0,0.5);
     font-size: 1.4em;
     font-style: italic;
     margin: 1.0em auto;
     padding: 2.0em;
     text-align: center;
-    width: 60%;
+    width: 90%;
 }
 
 /* ------------------------------------------------------
@@ -437,7 +442,7 @@ div.deck-warning{
     Login Page & Deck Edit Forms 
 ------------------------------------------------------ */
 
-div.login-wrapper, div.deck-edit-wrapper{
+div.login-wrapper, div.deck-edit-wrapper, div.user-profile-wrapper{
     border: 1px solid #bbb;
     box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
     margin: 2.0em auto;
@@ -539,17 +544,10 @@ div.review-nav{
 }
 
 div.review-nav a{
-    /*background: rgba(179, 212, 251, 0.3);
-    border-radius: 5px;
-    box-shadow: 0px 6px 10px rgba(0,0,0,0.2);*/
     display: block;
     padding: 2.0em 1.5em;
     text-decoration: none;
     transition: background .2s;
-}
-
-div.review-nav a:hover{
-    /*background: rgba(179, 212, 251, 0.5);*/
 }
 
 div.review-nav a:first-child{
@@ -568,4 +566,18 @@ div.review-nav span {
 
 .review-prev.faded-option{
     opacity: .3;
+}
+
+/* ------------------------------------------------------
+    User Profile
+------------------------------------------------------ */
+
+div.user-profile-wrapper{
+    min-height: 182px;
+    width: 80%;
+}
+
+div.user-profile-wrapper img.user-icon {
+    float: left;
+    margin-right: 1.0em;
 }
