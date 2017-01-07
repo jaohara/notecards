@@ -23,6 +23,7 @@ urlpatterns =[
     url(r'^deck/create/$', views.create_deck, name='create_deck'),
     url(r'^deck/(?P<pk>\d+)/delete/$', views.delete_deck, name='delete_deck'),
     url(r'^deck/(?P<pk>\d+)/edit/$', views.edit_deck, name='edit_deck'),
+    url(r'^deck/(?P<deck_pk>\d+)/card/(?P<card_pk>\d+)/edit$', views.edit_card, name='edit_card'),
     url(r'^deck/(?P<pk>\d+)/review/card/(?P<card_index>\d+)/$', views.deck_review, name='deck_review'),
     url(r'^deck/(?P<pk>\d+)/quiz/(?P<quiz_index>\d+)/$', views.deck_quiz, name='deck_quiz'),
     url(r'^deck/(?P<pk>\d+)/quiz/(?P<quiz_index>\d+)/answer_choice/(?P<answer_choice>\d+)', views.deck_quiz, name='deck_quiz'),

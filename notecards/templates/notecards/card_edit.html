@@ -1,0 +1,16 @@
+{% extends 'notecards/base.html' %}
+
+{% block content %}
+<h1>Edit Card in '{{deck.title}}</h1>
+
+{% if form.errors %}
+    <p>There was an error editing this deck.</p>
+    {{form.errors}}
+{% endif %}
+
+    <form method="post" class="card-form" action="{% url 'edit_card' deck_pk=deck_pk card_pk=card_pk%}">
+    {% csrf_token %}
+                {{ form }}
+        <button type="submit" class="save btn btn-default">Save Changes</button>
+    </form>
+{% endblock %}

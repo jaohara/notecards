@@ -46,6 +46,9 @@ def deck_list(request, sort_method="created_date", sort_order="ascending"):
     if sort_method not in accepted_methods:
         sort_method = "created_date"
 
+    if sort_method == "author":
+        sort_method = "author__username"
+
     reset_session_quiz(request)
     reset_session_cards(request)
     decks = Deck.objects.order_by("{}{}".format(order_switch,sort_method))
@@ -309,6 +312,33 @@ def add_card_to_deck(request, pk):
             return redirect('deck_view', pk=deck.pk)
     else:
         redirect('/')
+
+@login_required
+def edit_card(request, deck_pk, card_pk):
+    # what do I need the deck for?
+    deck = get_object_or_404(Deck, pk=deck_pk)
+    card = get_object_or_404(Card, pk=card_pk)
+
+    if request.method == "POST":
+        form = CardForm(request.POST or None, instance=card)
+        if form.is_valid():
+            form.save()
+            return redirect('deck_view', pk=deck_pk)
+
+    else:
+        if request.user.is_authenticated():
+            username = request.user
+            if deck.author == username:
+                form = CardForm(initial={'front': card.front,
+                                         'back': card.back,})
+
+                return render(request, 'notecards/card_edit.html', {'card': card,
+                                                                    'card_pk': card_pk,
+                                                                    'deck': deck,
+                                                                    'deck_pk': deck_pk,
+                                                                    'form': form,})
+        else: 
+            return redirect('deck_view', pk=deck_pk)
 
 @login_required
 def remove_card_from_deck(request, pk):
