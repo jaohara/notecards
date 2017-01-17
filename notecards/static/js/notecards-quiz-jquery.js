@@ -5,6 +5,9 @@ $(document).ready(function(){
     // this variable just exists for testing jquery things.
     var DEBUG = true;
 
+    // controls feedback message fadeout
+    var FEEDBACK_FADE = false
+
     //hotkey definitions
     var firstChoice     = "a";
     var secondChoice    = "s";
@@ -24,11 +27,13 @@ $(document).ready(function(){
     var posFeedback = $(".feedback-positive");
     var negFeedback = $(".feedback-negative");
 
-    if (posFeedback.length || negFeedback.length){
-        if (posFeedback.length){
-            posFeedback.delay(feedbackAnimationDelay).slideUp(feedbackSlideSpeed);
-        } else {
-            negFeedback.delay(feedbackAnimationDelay).slideUp(feedbackSlideSpeed);
+    if (FEEDBACK_FADE){
+        if (posFeedback.length || negFeedback.length){
+            if (posFeedback.length){
+                posFeedback.delay(feedbackAnimationDelay).slideUp(feedbackSlideSpeed);
+            } else {
+                negFeedback.delay(feedbackAnimationDelay).slideUp(feedbackSlideSpeed);
+            }
         }
     }
 

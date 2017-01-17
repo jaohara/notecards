@@ -32,7 +32,7 @@
 
     {% for answer in answers%}
         <li>
-        <a href="{% url 'deck_quiz' pk=pk quiz_index=quiz_index|add:'1' answer_choice=answer.0 %}"
+        <a href="{% url 'deck_quiz' deck_pk=quiz_deck_pk answer_choice=answer.0 %}"
             class="quiz-answer-{{answer.2}}">{{answer.1}}</a>
         </li>
 

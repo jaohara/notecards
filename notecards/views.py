@@ -126,98 +126,151 @@ def deck_review(request, pk, card_index=0):
                                                               'pk': pk,})
 
 @login_required
-def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
+def deck_quiz(request, deck_pk, answer_choice=None):
 
-    # future idea - quiz timer. Save start timestamp, use jquery to update it, submit
-    # with results.
-
-    quiz_index = int(quiz_index)
-    question_result = ""
-    feedback_type = "none"
-    feedback_text = ""
-
-
-    # This will set up our session variables
-    # ---
-    # maybe I should check to make sure quiz_index is also 0 if the quiz doesn't exist
     if 'quiz' not in request.session:
-        deck = get_object_or_404(Deck, pk=pk)
-        card_set = Card.objects.filter(deck__title=deck.title)
+        quiz_deck = get_object_or_404(Deck, pk=deck_pk)
+        card_set = Card.objects.filter(deck__pk=quiz_deck.pk)
 
         quiz = list()
+        quiz_index = 0
 
         for card in card_set:
             quiz.append({'front': card.front, 'back': card.back, 'pk': card.pk})
 
         random.shuffle(quiz)
-        request.session['quiz_name'] = deck.title
-        request.session['quiz_finished'] = False
+
+        # is this the best way to approach question_answer?
+        request.session['question_answer'] = quiz[quiz_index].get('pk')
+
+        #save session vars
         request.session['quiz'] = quiz
-        request.session['quiz_questions'] = deck.card_count
         request.session['quiz_attempted'] = 0
         request.session['quiz_correct'] = 0
-        request.session['previous_answer'] = quiz[quiz_index].get('pk')
-    else:
-        quiz = request.session['quiz']
+        request.session['quiz_count'] = quiz_deck.card_count
+        request.session['quiz_deck_pk'] = deck_pk
+        request.session['quiz_finished'] = 0
+        request.session['quiz_index'] = quiz_index
+        request.session['quiz_name'] = quiz_deck.title
 
-    # this should be made to account for finishing the quiz
-    # maybe I should save quiz_index as a session variable
-    # instead of revealing it via get?
+    # initialize method vars
+    feedback_text   = ""
+    feedback_type   = "none"
+    question_result = ""
 
-    # also, what about repeating questions by changing the URL manually? should
-    # the quiz object be treated as a queue?
+    # pull session vars to local vars
+    question_answer = request.session['question_answer']
+    quiz            = request.session['quiz']
+    quiz_attempted  = request.session['quiz_attempted']
+    quiz_correct    = request.session['quiz_correct']
+    quiz_count      = request.session['quiz_count']         # unnecessary?
+    quiz_deck_pk    = request.session['quiz_deck_pk']       # unnecessary?
+    quiz_finished   = request.session['quiz_finished']
+    quiz_index      = request.session['quiz_index']
+    quiz_name       = request.session['quiz_name']          # unnecessary?
+
+
+    """
+    The big problem I'm running into here is that there's no reliable way to 
+    check if the page was refreshed. As of right now, I'm handling answer_choice
+    via get, so that will always be resubmitted on a refresh. Because of this, 
+    the quiz never knows whether or not to count that answer for the current 
+    question or the question question.
+
+    Here, we're fixing things up a bit. I'm planning on moving quiz_index to be
+    handled by the view rather than by the URLs, so this should auto-increment.
+    With this new behavior, the refresh will count as an incorrect answer 
+    for the question question and move on to the next, but this is far from ideal.
+
+    What if answers were submitted via POST? This would have that baked-in browser
+    warning when resubmitting a form. The user is informed that what they're doing
+    could break the functionality of the current page. Would I handle this via 
+    a form instead of hyperlinks? Can I have links submit via post?
+
+        This idea doesn't work, but I could rewrite my HTML to use a form with
+        buttons styled like my Hyperlinks instead of just using the links. 
+        I don't know how much I like this, but this would solve that problem.
+
+    Is that even the solution to the problem? Is there a way to keep this solely 
+    via GET and use session vars to check whether or not we've moved on to 
+    another question?
+
+    I suppose a good way to do this would be to save the new answer set as a 
+    session var and check to see if the submitted answer is one of the ones from
+    the current question's answer pool, assuming that if it doesn't match it would
+    be one of the question question's answers and consider that a refresh instead
+    of a submitted answer.
+
+    A potential flaw of this approach would be if the current question's answer pool
+    also contained the answer that was submitted for the question question. This 
+    would result in it counting as an incorrect (or correct, I guess) answer for the
+    current question, which isn't the intended functionality. This functionality would
+    also happen without any warning, so the user would have no idea what happened.
+
+    Is POST the best solution here?
+    """
+
+
+
+    """
+    Conditions to check for:
+
+        - Is the quiz finished?
+        - Has an answer been submitted?
+        - Was the page refreshed without an answer submitted?
+    """
+
+    """
+    # case: quiz is finished
     if quiz_index >= len(quiz):
-        #reset_session_quiz(request)
-        request.session['quiz_finished'] = True
-        return redirect('/deck/{}/'.format(pk))
+        # quiz is finished.
 
-    else:
-        # first, we need to check if an answer has been submitted. 
-        if answer_choice is not None:
-            # we've submitted an answer, so let's check if it's right.
-            if 'previous_answer' in request.session:
-                request.session['quiz_attempted'] += 1
+        # RETURN TO THIS, TALLY LAST ANSWER + SCORE BEFORE REDIRECTING
+        quiz_finished = True
+        request.session['quiz_finished'] = quiz_finished
+        return redirect('/deck/{}'.format(quiz_deck_pk))
+    """
 
-                answer_card = get_object_or_404(Card, pk=request.session['previous_answer'])
-                answer_front = answer_card.front
-                answer_back = answer_card.back
+    # case: answer is given, check for correctness
+    if answer_choice is not None:
+        quiz_attempted += 1
 
-                feedback_type = "negative"
-                question_result = "Sorry, wrong answer: "
+        answer_card = get_object_or_404(Card, pk=question_answer)
+        answer_front = answer_card.front
+        answer_back = answer_card.back
 
-                if int(answer_choice) == int(request.session['previous_answer']):
-                    feedback_type = "positive"
-                    question_result = "Correct!"
-                    request.session['quiz_correct'] += 1
+        feedback_type = "negative"
+        question_result = "Sorry, wrong answer:"
 
-                feedback_text = "{} '{}{}' matches with '{}{}'".format(question_result,
-                                                                       answer_front[:25],
-                                                                       make_elipsis(answer_front),
-                                                                       answer_back[:25],
-                                                                       make_elipsis(answer_back))
+        if int(answer_choice) == int(question_answer):
+            feedback_type = "positive"
+            question_result = "Correct!"
+            quiz_correct += 1
 
-        question = quiz[quiz_index].get('front')
+        quiz_index += 1
+
+        # check if quiz is finished
+        if quiz_index >= len(quiz):
+            quiz_finished = True
+
+        feedback_text = "{} '{}{}' matches with '{}{}'".format(question_result,
+                                                               answer_front[:25],
+                                                               make_elipsis(answer_front),
+                                                               answer_back[:25],
+                                                               make_elipsis(answer_back))
+
+    if not quiz_finished:
+        # find next question
+        new_question = quiz[quiz_index].get('front')
         answers_pk = [quiz[quiz_index].get('pk')]
-        request.session['previous_answer'] = answers_pk[0]
+        question_answer = answers_pk[0]
 
-        if 'quiz_attempted' in request.session:
-            quiz_attempted = request.session['quiz_attempted']
-        else:
-            # this is kind of a BS fallback, will be more elegant later
-            quiz_attempted = 0
-        if 'quiz_correct' in request.session:
-            quiz_correct = request.session['quiz_correct']
-        else:
-            # same with this one
-            quiz_correct = 0
-
-        # pick randomly
+        # populate answer list
         while len(answers_pk) < 4:
             answer_pk = quiz[random.randrange(len(quiz))].get('pk')
             if answer_pk not in answers_pk:
                 answers_pk.append(answer_pk)
 
-        # we should now have four random answers, so let's put them in random order:
         random.shuffle(answers_pk)
 
         answers = list()
@@ -229,25 +282,36 @@ def deck_quiz(request, pk, quiz_index=0, answer_choice=None):
             answers.append((int(answer), answer_back, answers_index))
             answers_index += 1
 
-        # now we have answers, which is a list of tuples of (card.pk, card.back)
+    # score the quiz
+    if quiz_attempted > 0:
+        quiz_score = quiz_correct / quiz_attempted * 100.00
+        quiz_score = '{:.2f}'.format(quiz_score)
+    else:
+        quiz_score = 0.00
 
-        if quiz_attempted > 0:
-            quiz_score = quiz_correct / quiz_attempted * 100.00
-            quiz_score = '{:.2f}'.format(quiz_score)
-        else:
-            quiz_score = 0.00
 
+    # AFTER operations, BEFORE rendering
+    # quiz_count, quiz_deck_pk, quiz_name don't need to be reset
+    request.session['question_answer']  = question_answer  
+    request.session['quiz']             = quiz
+    request.session['quiz_attempted']   = quiz_attempted
+    request.session['quiz_correct']     = quiz_correct
+    request.session['quiz_finished']    = quiz_finished
+    request.session['quiz_index']       = quiz_index
+
+    if (quiz_finished):
+        return redirect('/deck/{}'.format(quiz_deck_pk))
+    else:   
         return render(request, 'notecards/deck_quiz.html', {'answers': answers,
                                                             'deck_title': request.session['quiz_name'],
                                                             'feedback_type': feedback_type,
                                                             'feedback_text': feedback_text,
-                                                            'pk': pk,
-                                                            'question': question,
+                                                            'question': new_question,
                                                             'quiz_attempted': quiz_attempted,
                                                             'quiz_correct': quiz_correct,
+                                                            'quiz_deck_pk': quiz_deck_pk,
                                                             'quiz_index': quiz_index,
                                                             'quiz_score': quiz_score,})
-
 
 
 

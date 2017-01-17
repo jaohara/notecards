@@ -1,0 +1,30 @@
+Quiz Workflow
+-------------
+
+Current Implementation:
+
+1. Take in HttpRequest
+
+2. Pull pk, quiz_index (default to zero), answer_choice (defaults to None) from GET.  
+    - pk is used for the deck, and ONLY USED DURING INITIALIZATION. Pretty useless.
+    - quiz_index represents the index of the randomly-shuffled quiz array. Revealing this via GET allows users to skip around in the quiz, which is a problem. This is probably also the root of the refresh error (refreshing the page counts as a submitted answer but without an answer selected, resulting in an incorrect answer and a total outside the bounds of the amount of questions)
+    - answer_choice represents the answer submitted, if any. This is compared to the "previous_answer" session variable, which stores the id of the answer for the question that was asked on the previous page. This is probably the only thing that needs to be revealed via GET.
+
+3. Convert Quiz_index to an integer, and intialize question_result (""), feedback_type ("none"), and feedback_text ("").
+    - This approach is fine.
+
+4. Check for session variables.    
+    - If none, create the quiz card_set by pulling all cards that belong to the deck with the submitted pk and shuffle them via random.shuffle().
+    - All of the following steps refer to keys in the request.session[] dictionary:
+        - save deck.title to 'quiz_name'
+        - set 'quiz_finished' to False (THIS VARIABLE IS UNUSED CURRENTLY)
+        - save the card_set to 'quiz'
+        - save deck.card_count to 'quiz_questions' (THIS VARIABLE IS UNUSED CURRENTLY)
+        - initialize 'quiz_attempted' to 0
+        - initialize 'quiz_correct' to 0
+        - save quiz[quiz_index].get('pk') to 'previous_answer'
+            - As quiz_index should be 0 at this point, this sets previous_answer to the primary key of the first question in the quiz
+                - SHOULD BE is not the same as GUARANTEED TO BE. This could easily be exploited, and another reason why quiz_index should be handled server-side via a session variable.
+
+    - If Session variables exist, set quiz equal to request.session['quiz']
+        - Others are pulled only when needed, which is kind of a shitty way to do that.

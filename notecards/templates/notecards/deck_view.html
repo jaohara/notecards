@@ -1,23 +1,6 @@
 {% extends 'notecards/base.html' %}
 
-{% block menu %}<!--
-    <div class="menu">
-        {% if deck.card_count > 1 %}
-        <span class="deck-review">
-            <a href="{% url 'deck_review' pk=deck.pk card_index=0 %}">Review</a>
-        {% else %}
-        <span class="deck-review unclickable" tooltip="At least 2 cards are needed to review.">Review
-        {% endif %}
-        </span>
-
-        {% if deck.card_count >= 4 %}
-        <span class="deck-quiz">
-            <a href="{% url 'deck_quiz' pk=deck.pk quiz_index=0 %}">Quiz</a>
-        {% else %}
-        <span class="deck-quiz unclickable" tooltip="At least 4 cards are needed to make a Quiz.">Quiz
-        {% endif %}
-        </span>-->
-    </div>
+{% block menu %}
 {% endblock %}
 
 {% block feedback %}
@@ -48,7 +31,7 @@
             {% endif %}
 
             {% if deck.card_count >= 4 %}
-            <a href="{% url 'deck_quiz' pk=deck.pk quiz_index=0 %}">
+            <a href="{% url 'deck_quiz' deck_pk=deck.pk %}">
                 <span class="glyphicon glyphicon-question-sign"></span>
                 <span class="deck-quiz">Quiz</span>
             </a>

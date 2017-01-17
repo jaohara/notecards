@@ -361,11 +361,15 @@ table.deck-table{
 }
 
 .deck-table-header th{
-    padding: .6em .6em .6em 0em;
+    padding: .6em .6em .6em .6em;
 }
 
 .deck-table-header th:first-child, .deck-table-header th:last-child{
     padding: .6em .6em .6em .6em;
+}
+
+.deck-table-header th:hover{
+    background-color: #ddd;
 }
 
 .deck-table a{
