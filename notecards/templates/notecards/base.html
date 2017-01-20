@@ -38,15 +38,29 @@
             <div class="menu login">
                 {% if user.is_authenticated %}
                     <a href="{% url 'user_profile' pk=user.pk%}">
+                        <!-- this link makes the first item redundant -->
                         <img class="user-avatar" src="{% static 'img/notecards-user-icon-1.png' %}"> 
                         {{user.username}}
+                        &nbsp;<span class="glyphicon glyphicon-chevron-down"></span>
                     </a>
 
-                    <a href="{% url 'logout' %}">Logout</a>
+                    <ul class="user-menu">
+                        <li class="user-menu-item">
+                            <a href="{% url 'user_profile' pk=user.pk%}">Profile</a>
+                        </li>
+                        <li class="user-menu-item">
+                            <a href="{% url 'logout'%}">Logout</a>
+                        </li>
+                    </ul>
+
+                    <!--<a href="{% url 'logout' %}">Logout</a>-->
                 {% else %}
-                <a href="{% url 'create_user' %}">Sign Up</a> - 
-                <a href="{% url 'login' %}">Login</a>
+                <div class="logged-out-wrapper">
+                    <a href="{% url 'create_user' %}">Sign Up</a> - 
+                    <a href="{% url 'login' %}">Login</a>
+                </div>
                 {% endif %}
+
             </div>
 
             {% block menu %}

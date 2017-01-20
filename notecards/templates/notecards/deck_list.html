@@ -7,27 +7,59 @@
         <tr class="deck-table-header">
             <!-- this... is kind of gross right now, but bear with me -->
             {% if sort_method == 'title' and sort_order == 'descending'%}
-            <th><a href="{% url 'deck_list' sort_method='title' sort_order='ascending'%}">Deck</a></th>
+            <th>
+                <a href="{% url 'deck_list' sort_method='title' sort_order='ascending'%}">
+                    Deck &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+            </th>
             {% else %}
-            <th><a href="{% url 'deck_list' sort_method='title' sort_order='descending'%}">Deck</a></th>
+            <th>
+                <a href="{% url 'deck_list' sort_method='title' sort_order='descending'%}">
+                    Deck &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </th>
             {% endif %}
 
             {% if sort_method == 'card_count' and sort_order == 'descending'%}
-            <th><a href="{% url 'deck_list' sort_method='card_count' sort_order='ascending'%}">Cards</a></th>
+            <th>
+                <a href="{% url 'deck_list' sort_method='card_count' sort_order='ascending'%}">
+                    Cards &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+            </th>
             {% else %}
-            <th><a href="{% url 'deck_list' sort_method='card_count' sort_order='descending'%}">Cards</a></th>
+            <th>
+                <a href="{% url 'deck_list' sort_method='card_count' sort_order='descending'%}">
+                    Cards &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </th>
             {% endif %}
 
             {% if sort_method == 'author__username' and sort_order == 'descending'%}
-            <th><a href="{% url 'deck_list' sort_method='author' sort_order='ascending'%}">Author</a></th>
+            <th>
+                <a href="{% url 'deck_list' sort_method='author' sort_order='ascending'%}">
+                    Author &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+            </th>
             {% else %}
-            <th><a href="{% url 'deck_list' sort_method='author' sort_order='descending'%}">Author</a></th>
+            <th>
+                <a href="{% url 'deck_list' sort_method='author' sort_order='descending'%}">
+                    Author &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </th>
             {% endif %}
 
             {% if sort_method == 'created_date' and sort_order == 'descending'%}
-            <th><a href="{% url 'deck_list' sort_method='created_date' sort_order='ascending'%}">Created</a></th>
+            <th>
+                <a href="{% url 'deck_list' sort_method='created_date' sort_order='ascending'%}">
+                    Created &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+            </th>
             {% else %}
-            <th><a href="{% url 'deck_list' sort_method='created_date' sort_order='descending'%}">Created</a></th>
+            <th>
+                <a href="{% url 'deck_list' sort_method='created_date' sort_order='descending'%}">
+                    Created &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </th>
             {% endif %}
             <!--
             <th><a href="{% url 'deck_list' sort_method='card_count'%}">Cards</a></th>
@@ -40,7 +72,7 @@
         <tr class="deck-table-row">
             <td><a href="{% url 'deck_view' pk=deck.pk %}">{{deck.title}}</a></td>
             <td class="centered-cell">{{deck.card_count}}</td>
-            <td class="centered-cell">
+            <td>
                 <a href="{% url 'user_profile' pk=deck.author.pk%}">{{deck.author|capfirst}}</a>
             </td>
             <td>{{deck.created_date}}</td>

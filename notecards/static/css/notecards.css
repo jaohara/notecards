@@ -41,6 +41,7 @@ body {
     box-shadow: 0px 1px 4px rgba(0,0,0,0.4);
     color: #fff;
     margin: 0px;
+    min-height: 74px;
     padding: 0px 0px 0px 35px;
 }
 
@@ -63,39 +64,87 @@ body {
 ------------------------------------------------------ */
 
 div.menu{
-    background: rgb(52,62,71);
-    /*border-radius: 4px;*/
-    /*border: 1px solid rgb(79,92,104);*/
     float: right;
     font-size: 1.0em;
-    /*margin: 4px 0 4px 1.0em;*/
     padding: 4px;
-    /*padding: 0px 10px;*/
 }
 
-div.menu.login{
-
+div.menu, ul.user-menu{
+    margin-right: 35px;
 }
 
 div.menu a{
     color: #fff;
     display: inline-block;
-    margin-right: 1.0em;
+    /*margin-right: 1.0em;*/
     padding: 0px .25em;
     text-decoration: none;
-    transition: backround .2s;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.7);
 }
 
-div.menu a:hover{
-    background: rgb(79,92,104);
-    border-radius: 4px;
+div.menu a span.glyphicon{
+    color: #fff;
+}
+
+ul.user-menu{
+    /*background: rgba(255,255,255,0.4);*/
+    /*background: rgba(25,65,104,1.0);*/
+    background: #333;
+    border-bottom-right-radius: 2px;
+    border-bottom-left-radius: 2px;
+    box-shadow: 0px 4px 4px rgba(0,0,0,0.3);
+    color: #fff;
+}
+
+div.menu:hover{
+    background: rgba(19,25,31,1.0);
+    box-shadow: inset 0px 1px 8px rgba(0,0,0,0.3);
+}
+
+div.menu:hover .user-menu{
+    display: block;
 }
 
 img.user-avatar{
+    border-radius: 50%;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.3);
     height: 64px;
     margin-right: 1.0em;
     width: 64px;
 }
+
+div.logged-out-wrapper{
+    align-items: center;
+    display: flex;
+    font-size: 1.2em;
+    min-height: 64px;
+}
+
+/* subsection - Menu Dropdown */
+ul.user-menu{
+    display: none;
+    list-style-type: none;
+    margin-top: 4px;
+    min-width: 160px;
+    position: absolute;
+    right: 0px;
+    z-index: 1;
+}
+
+ul.user-menu li.user-menu-item a{
+    display: inline-block;
+    margin: 0em;
+    min-height: 2.0em;
+    padding: 1.0em;
+    transition: background .2s box-shadow .2s;
+    width: 100%;
+}
+
+ul.user-menu li.user-menu-item a:hover{
+    background: #555;
+    box-shadow: inset 0px 1px 8px rgba(0,0,0,0.3);
+}
+
 
 /* ------------------------------------------------------
     Buttons
@@ -372,6 +421,10 @@ table.deck-table{
     background-color: #ddd;
 }
 
+.deck-table-header th:hover span.glyphicon{
+    opacity: 0.75;
+}
+
 .deck-table a{
     display: block;
     padding: .6em .6em .6em .6em;
@@ -404,6 +457,16 @@ table.deck-table{
 
 td span.glyphicon-lock{
     color: rgba(0,0,0,0.4);
+}
+
+.centered-cell{
+    text-align: center;
+}
+
+table.deck-table span.glyphicon{
+    color: rgba(0,0,0,0.8);
+    font-size: 0.5em;
+    opacity: 0.0;
 }
 
 /* ------------------------------------------------------
@@ -545,7 +608,7 @@ ul.temp-quiz-list li a:hover{
 
 div.review-content{
     min-height: 25em;
-    padding: 3em 0;
+    margin: 3em 0;
 }
 
 div.front, div.back{
@@ -571,7 +634,9 @@ div.front.small-card, div.back.small-card{
 }
 
 div.review-nav{
+    display: flex;
     font-size: 1.4em;
+    justify-content: space-around;
     margin: 1.5em auto;
     min-height: 6em;
     padding: 0em 6em;
@@ -580,21 +645,25 @@ div.review-nav{
 }
 
 div.review-nav a{
-    display: block;
     padding: 2.0em 1.5em;
     text-decoration: none;
-    transition: background .2s;
 }
 
-div.review-nav a:first-child{
+/*
+div.review-nav a.review-prev{
     float: left;
     padding-right: 2.0em;
 }
 
-div.review-nav a:last-child{
+div.review-nav a.review-next{
     float: right;
     padding-left: 2.0em;
 }
+
+div.review-nav a:last-child{
+    display: block;
+    text-align: center;
+}*/
 
 div.review-nav span {
     padding: 0 0.5em;
@@ -639,12 +708,49 @@ div.error-content h1{
     User Profile
 ------------------------------------------------------ */
 
+
+
+
+
+
+
+
+
+
+
+
+/* --------------------------
+    RESUME
+            WORKING
+                        HERE!
+
+    -------------------------- */
+
+
+
+
+
+/*
+    flexbox layout?
+*/
+
+
+
+
+
+
+
+
+
 div.user-profile-wrapper{
+    align-items: flex-start;
+    display: flex;
     min-height: 182px;
     width: 80%;
 }
 
 div.user-profile-wrapper img.user-icon {
-    float: left;
-    margin-right: 1.0em;
+    align-self: flex-start;
+    border-radius: 50%;
+    margin-right: 2.0em;
 }

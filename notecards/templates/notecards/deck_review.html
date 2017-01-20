@@ -5,12 +5,6 @@
 
 {% block pageheader %} - Review{% endblock %}
 
-{% block menu %}
-    <div class="menu">
-        <a href="{% url 'deck_view' pk=pk%}">Return</a>
-    </div>
-{% endblock %}
-
 {% block content %}
 
     <script src="{% static 'js/notecards-review-jquery.js'%}"></script>
@@ -29,6 +23,10 @@
         {% endif %}
         <span class="glyphicon glyphicon-chevron-left"></span>Previous Card</a>
 
+        <a class="review-return" href="{% url 'deck_view' pk=pk%}">
+        <span class="glyphicon glyphicon-chevron-up"></span>
+        Return</a>
+
         <a class="review-next" href="{% url 'deck_review' pk=pk card_index=card_index|add:'1' %}">
         {% if card_index == deck_length|sub:'1' %}
         Finish
@@ -37,7 +35,7 @@
         {% endif %}
         <span class="glyphicon glyphicon-chevron-right"></span>
         </a>
-
     </div>
+
 
 {% endblock %}
