@@ -57,9 +57,9 @@
 
         {% for card in cards %}
 
-        {% if user == deck.author %}
-        <a class="card-edit-link" href="{% url 'edit_card' deck_pk=deck.pk card_pk=card.pk %}">
-        {% endif %}
+            {% if user == deck.author %}
+            <a class="card-edit-link" href="{% url 'edit_card' deck_pk=deck.pk card_pk=card.pk %}">
+            {% endif %}
 
         <div class="card-wrapper">
 
@@ -68,12 +68,9 @@
 
         </div>
 
-        {% if user == deck.author %}
-        </a>
-        {% endif %}
-
-        <!--<a href="{% url 'remove_card_from_deck' pk=card.pk%}">
-            <span class="glyphicon glyphicon-remove"></span>-->
+            {% if user == deck.author %}
+            </a>
+            {% endif %}
 
         {% empty %}
 
@@ -81,9 +78,7 @@
             <p><span class="glyphicon glyphicon-info-sign"></span> This deck doesn't contain any cards.</p>
         </div>
 
-
         {% endfor %}
-
 
     </div>
 

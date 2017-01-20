@@ -61,11 +61,10 @@
                 </a>
             </th>
             {% endif %}
-            <!--
-            <th><a href="{% url 'deck_list' sort_method='card_count'%}">Cards</a></th>
-            <th><a href="{% url 'deck_list' sort_method='author'%}">Author</a></th>
-            <th><a href="{% url 'deck_list' sort_method='created_date'%}">Created</a></th>-->
+
+            {% if user.is_authenticated %}
             <th>Remove?</th>
+            {% endif %}
         </tr>
 
         {% for deck in decks %}
@@ -76,8 +75,9 @@
                 <a href="{% url 'user_profile' pk=deck.author.pk%}">{{deck.author|capfirst}}</a>
             </td>
             <td>{{deck.created_date}}</td>
+            {% if user.is_authenticated %}
             <td class="centered-cell">
-                {% if user.is_authenticated and user == deck.author %}
+                {% if user == deck.author %}
                 <a class="delete-link" href="{% url 'delete_deck' pk=deck.pk %}">
                     <span class="glyphicon glyphicon-remove"></span>
                 </a>
@@ -86,6 +86,7 @@
                     tooltip="You don't have permission to delete this deck."></span>
                 {% endif %}
             </td>
+            {% endif %}
         </tr>
         {% endfor %}
 

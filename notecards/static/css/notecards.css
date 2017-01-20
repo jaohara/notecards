@@ -161,15 +161,15 @@ ul.user-menu li.user-menu-item a:hover{
 }
 
 /* ------------------------------------------------------
-    Deck Meta
+    Deck Meta & Card Meta
 ------------------------------------------------------ */
 
-div.deck-meta{
+div.deck-meta, div.card-meta{
     min-height: 64px;
     margin: 20px 0px;
 }
 
-div.deck-meta p{
+div.deck-meta p, div.card-meta p{
     font-size: 1.2em;
     width: 100%;
 }
@@ -182,13 +182,13 @@ div.deck-meta p span.deck-origin{
     padding: .4em;  
 }
 
-div.deck-meta h1{
+div.deck-meta h1, div.card-meta h1{
     float: left;
     margin: 0px 0px 8px 0px;
     width: 50%;
 }
 
-div.deck-meta div.deck-controls{
+div.deck-meta div.deck-controls, div.card-meta div.card-controls{
     float: right;
     font-size: 1.6em;
     margin-top: 20px;
@@ -197,7 +197,7 @@ div.deck-meta div.deck-controls{
     width: 50%;
 }
 
-div.deck-meta div.deck-controls a{
+div.deck-meta div.deck-controls a, div.card-meta div.card-controls a{
     text-decoration: none;
     display: inline-block;
     margin: 0em .5em;
@@ -576,6 +576,9 @@ div.login-wrapper input.login-submit, div.deck-edit-wrapper input.edit-submit{
 /* ------------------------------------------------------
     Quiz CSS
 ------------------------------------------------------ */
+
+div.quiz-score{
+}
 
 ul.temp-quiz-list{
     float: left;

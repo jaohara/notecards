@@ -1,7 +1,18 @@
 {% extends 'notecards/base.html' %}
 
 {% block content %}
-<h1>Edit Card in '{{deck.title}}</h1>
+
+<div class="card-meta">
+    <h1>Edit Card in '{{deck.title}}'</h1>
+    <div class="card-controls">
+        {% if user == deck.author %}
+        <a href="{% url 'delete_card' pk=card_pk %}">
+            <span class="glyphicon glyphicon-remove"></span>
+            <span class="deck-edit">Delete</span>
+        </a>
+        {% endif %}
+    </div>
+</div>
 
 {% if form.errors %}
     <p>There was an error editing this deck.</p>
