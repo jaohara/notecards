@@ -138,9 +138,11 @@ div.menu-search-bar{
 }
 
 div.menu-search-bar form input{
-    background-color: #666;
-    border: 0px;
+    /*background-color: #666;*/
+    background-color: rgba(243, 243, 243, 1.0);
+    border: 1px solid #bbb;
     border-radius: 25px;
+    color: #222;
     margin: 0px 1.0em;
     outline: none;
     /*padding: .4em .4em .4em 1.8em;*/
