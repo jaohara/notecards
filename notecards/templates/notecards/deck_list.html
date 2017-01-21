@@ -1,7 +1,14 @@
 {% extends 'notecards/base.html' %}
 
 {% block content %}
-    <h1>Current Decks</h1>
+    {% if deck_query == None %}
+    <h1>All Decks</h1>
+    {% else %}
+    <h1>Search results for "{{deck_query}}":</h1>
+    <p>{{decks|length}} decks found.</p>
+    {% endif %}
+
+    {% if decks %}
     <table class="deck-table">
 
         <tr class="deck-table-header">
@@ -91,6 +98,7 @@
         {% endfor %}
 
     </table>
+    {% endif %}
 
     {% if user.is_authenticated %}
     <h2>Create a Deck</h2>

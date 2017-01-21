@@ -35,6 +35,8 @@
         <div class="page-header">
             <h1><a href="/">Notecards</a>{%block pageheader%}{%endblock%}</h1>
 
+            {% block pageinfo %}{%endblock%}
+
             <div class="menu login">
                 {% if user.is_authenticated %}
                     <a href="{% url 'user_profile' pk=user.pk%}">
@@ -55,16 +57,22 @@
 
                     <!--<a href="{% url 'logout' %}">Logout</a>-->
                 {% else %}
-                <div class="logged-out-wrapper">
-                    <a href="{% url 'create_user' %}">Sign Up</a> - 
-                    <a href="{% url 'login' %}">Login</a>
+                <!--<div class="logged-out-wrapper">-->
+                <a href="{% url 'create_user' %}" class="logged-out">Sign Up</a>
                 </div>
+                <div class="menu login">
+                <a href="{% url 'login' %}" class="logged-out">Login</a>
                 {% endif %}
-
             </div>
 
             {% block menu %}
             {% endblock %}
+
+            <div class="menu-search-bar">
+                <form method="GET">
+                    <span class="glyphicon glyphicon-search"></span><input type="text" name="search">
+                </form>
+            </div>
         </div>
 
         <div class="feedback-container">

@@ -33,8 +33,9 @@ def handler500(request):
     request.status_code = 500
     return respose
 
-def deck_list(request, sort_method="created_date", sort_order="ascending"):
-    # Bug: Author isn't sorting alphabetically, it's sorting by author pk
+def deck_list(request, sort_method="created_date", sort_order="ascending", deck_query=None):
+    if request.GET.get('search'):
+        deck_query = request.GET["search"]
 
     accepted_methods = ["created_date", "author", "title", "card_count"]
 
@@ -51,9 +52,14 @@ def deck_list(request, sort_method="created_date", sort_order="ascending"):
 
     reset_session_quiz(request)
     reset_session_cards(request)
-    decks = Deck.objects.order_by("{}{}".format(order_switch,sort_method))
+    if deck_query is not None:
+        # flesh this out in the future to be more robust, better pattern matching etc.
+        decks = Deck.objects.filter(title__icontains=deck_query).order_by("{}{}".format(order_switch,sort_method))
+    else:
+        decks = Deck.objects.order_by("{}{}".format(order_switch,sort_method))
     form = DeckForm()
-    return render(request, 'notecards/deck_list.html', {'decks': decks, 
+    return render(request, 'notecards/deck_list.html', {'decks': decks,
+                                                        'deck_query': deck_query, 
                                                         'form': form,
                                                         'sort_method': sort_method,
                                                         'sort_order': sort_order,})

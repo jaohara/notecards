@@ -10,6 +10,7 @@ urlpatterns =[
         views.deck_list, name='deck_list'),
     url(r'^(?P<sort_method>(author|title|created_date|card_count))/sort/(?P<sort_order>(ascending|descending))/$', 
         views.deck_list, name='deck_list'),
+    #url(r'^\?search\=(?P<deck_query>)$', views.deck_list, name='deck_list'),
 
     url(r'^accounts/create/$', views.create_user, name='create_user'),
     url(r'^accounts/(?P<pk>\d+)/$', views.user_profile, name='user_profile'),

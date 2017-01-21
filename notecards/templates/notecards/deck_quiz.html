@@ -3,12 +3,9 @@
 {% load mathfilters %}
 {% load staticfiles %}
 
-{% block pageheader %} - Quiz of '{{deck_title}}'{% endblock %}
-
 {% block menu %}
-    <!-- <input type="checkbox" class="hotkey-toggle">-->
     <div class="quiz-score">
-        Score:
+        <!--Score:-->
          {{quiz_correct}} / {{quiz_attempted}}  -  
          {{quiz_score}}%
     </div>
@@ -24,9 +21,6 @@
     <script src="{% static 'js/notecards-quiz-jquery.js' %}"></script>
     
     <div class="front">{{question}}</div>
-
-    <!--- temporary UL to code functionality. Will be 
-    clickable divs as blocks in future-->
 
     <ul class="temp-quiz-list">
 

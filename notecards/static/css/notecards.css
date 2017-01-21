@@ -70,7 +70,7 @@ div.menu{
 }
 
 div.menu, ul.user-menu{
-    margin-right: 35px;
+    /*margin-right: 35px;*/
 }
 
 div.menu a{
@@ -86,19 +86,29 @@ div.menu a span.glyphicon{
     color: #fff;
 }
 
+div.menu a.logged-out{
+    font-size: 1.2em;
+    min-height: 64px;
+    padding: 1.2em;
+}
+
 ul.user-menu{
     /*background: rgba(255,255,255,0.4);*/
     /*background: rgba(25,65,104,1.0);*/
     background: #333;
+    border: 0px 1px solid rgba(0,0,0,0);
     border-bottom-right-radius: 2px;
     border-bottom-left-radius: 2px;
-    box-shadow: 0px 4px 4px rgba(0,0,0,0.3);
+    box-shadow: 0px 3px 8px rgba(0,0,0,0.4);
     color: #fff;
 }
 
-div.menu:hover{
+div.menu:hover, div.quiz-score{
     background: rgba(19,25,31,1.0);
     box-shadow: inset 0px 1px 8px rgba(0,0,0,0.3);
+    border: 0px solid rgba(0,0,0,0.6);
+    border-left: 1px;
+    border-right: 1px;
 }
 
 div.menu:hover .user-menu{
@@ -118,6 +128,29 @@ div.logged-out-wrapper{
     display: flex;
     font-size: 1.2em;
     min-height: 64px;
+}
+
+div.menu-search-bar{
+    align-items: center;
+    display: flex;
+    float: right;
+    min-height: 74px;
+}
+
+div.menu-search-bar form input{
+    background-color: #666;
+    border: 0px;
+    border-radius: 25px;
+    margin: 0px 1.0em;
+    outline: none;
+    /*padding: .4em .4em .4em 1.8em;*/
+    padding: .4em .8em;
+    font-size: 1.4em;
+}
+
+div.menu-search-bar span.glyphicon{
+    font-size: 1.4em;
+    color: #ddd;
 }
 
 /* subsection - Menu Dropdown */
@@ -158,6 +191,13 @@ ul.user-menu li.user-menu-item a:hover{
     background: rgb(28,37,46);
     color: #fff;
     text-shadow: 0px 0px 0px rgb(255,255,255);
+    transition: box-shadow .2s;
+}
+
+.btn-default:hover{
+    background: rgb(28,37,46);
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.3); 
+    color: #fff;
 }
 
 /* ------------------------------------------------------
@@ -463,10 +503,14 @@ td span.glyphicon-lock{
     text-align: center;
 }
 
-table.deck-table span.glyphicon{
+table.deck-table th span.glyphicon{
     color: rgba(0,0,0,0.8);
     font-size: 0.5em;
     opacity: 0.0;
+}
+
+table.deck-table td span.glyphicon{
+    font-size: 0.8em;
 }
 
 /* ------------------------------------------------------
@@ -578,6 +622,14 @@ div.login-wrapper input.login-submit, div.deck-edit-wrapper input.edit-submit{
 ------------------------------------------------------ */
 
 div.quiz-score{
+    background: #555;
+    color: rgba(255,255,255,0.9);
+    float: right;
+    font-size: 1.8em;
+    font-weight: 800;
+    min-height: 64px;
+    padding: .76em;
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.4);
 }
 
 ul.temp-quiz-list{
