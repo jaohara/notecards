@@ -5,7 +5,7 @@
     <h1>All Decks</h1>
     {% else %}
     <h1>Search results for "{{deck_query}}":</h1>
-    <p>{{decks|length}} decks found.</p>
+    <p>{{decks|length}} deck{{decks|pluralize}} found.</p>
     {% endif %}
 
     {% if decks %}
@@ -79,7 +79,7 @@
             <td><a href="{% url 'deck_view' pk=deck.pk %}">{{deck.title}}</a></td>
             <td class="centered-cell">{{deck.card_count}}</td>
             <td>
-                <a href="{% url 'user_profile' pk=deck.author.pk%}">{{deck.author|capfirst}}</a>
+                <a href="{% url 'user_profile' pk=deck.author.pk%}">{{deck.author}}</a>
             </td>
             <td>{{deck.created_date}}</td>
             {% if user.is_authenticated %}
