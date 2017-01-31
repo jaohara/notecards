@@ -10,6 +10,7 @@ class Tag(models.Model):
     def __str__(self):
         return "Tag: {}".format(self.word)
 
+
 class Deck(models.Model):
     author = models.ForeignKey('auth.User')
     card_count = models.PositiveIntegerField(default=0)
@@ -37,47 +38,81 @@ class Deck(models.Model):
     def __str__(self):
         return "{}{} - Cards: {}".format(self.title, make_elipsis(self.title), self.card_count)
 
+
 class Card(models.Model):
     deck = models.ForeignKey(Deck, on_delete=models.CASCADE)
     front = models.TextField()
     back = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
 
-    """
-        Some idea for functionality here - I should have a "position in deck" option
-        to preserve some idea of order between the cards in a given deck.
-
-        How would I handle this? I could have an integer for card number stored 
-        in the Card model itself, and then when a new one is created we'll do
-        the following:
-
-            1. card in question calls add_card to increment deck
-            2. card sets its integer id equal to the current card count
-
-        I need to make sure this behavior is secure, as there could easily be a scenario
-        where the counts get out of order (calling remove_card? That would completely
-        mess with the order)
-
-        You know what? I'm gonna ignore this for now. It's not really necessary for
-        functionality. I'm going to leave this for a later version.
-    """
-
     def __str__(self):
         return "{}{} - {}{} in '{}{}'".format(self.front[:25], make_elipsis(self.front), 
                                               self.back[:25], make_elipsis(self.back), 
                                               self.deck.title[:25], make_elipsis(self.deck.title))
-"""
-    I don't really know how to use this - there's a setting called AUTH_PROFILE_MODEL, but
-    it seems that I can't use this setting after I've already created my database schema? 
-    I'm keeping this here for now, but it doesn't really have any function.
 
-    This should also have stats, right?
-"""
+
 class UserProfile(models.Model):
-    user = models.OneToOneField(User)
-    # this could probably be extended to allow user uploaded images, but let's keep
-    # it simple for now.
-
     # 1-4 for one of the prefab avatars. They are located in the static directory,
     # named notecards-user-icon-x.png
     avatar = models.PositiveIntegerField(default=1)
+    user = models.OneToOneField(User)
+
+    # these stats could probably be inferred by making a queryset of all a user's QuizResults
+    # I'm going to keep these here to remember the stats I want to grab, but they won't
+    # be handled in this model.
+
+    #questions_attempted = models.PositiveIntegerField(default=0)
+    #questions_correct = models.PositiveIntegerField(default=0)
+
+    #quizzes_attempted = models.PositiveIntegerField(default=0)
+    #quizzes_completed = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return "UserProfile for '{}'".format(self.user.username)
+
+
+class Message(models.Model):
+    sender = models.ForeignKey(User, related_name="sender")
+    recipient = models.ForeignKey(User, related_name="recipient")
+
+    subject = models.CharField(max_length=300)
+
+    message_body = models.TextField(max_length=5000)
+
+    message_date = models.DateTimeField(default=timezone.now)
+
+    message_read = models.BooleanField(default=False)
+
+    def __str__(self):
+        return "Message from {} to {} on {}".format(self.sender.username,
+                                                    self.recipient.username,
+                                                    self.message_date)
+
+class QuizResult(models.Model):
+    deck = models.ForeignKey(Deck)
+    user = models.ForeignKey(User)
+
+    quiz_completed = models.BooleanField()
+    quiz_date = models.DateTimeField(default=timezone.now)
+    #duration of quiz in ms
+    quiz_duration = models.PositiveIntegerField(default=1)
+
+    questions_attempted = models.PositiveIntegerField(default=0)
+    questions_correct = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+
+        quiz_completed_status = "COMPLETE" if self.quiz_completed else "INCOMPLETE"
+
+        return "'{}{}' quiz result from {} on {} - {} : {} / {}".format(self.deck.title[:25],
+                                                                   make_elipsis(self.deck.title),
+                                                                   self.user.username,
+                                                                   self.quiz_date,
+                                                                   quiz_completed_status,
+                                                                   self.questions_correct,
+                                                                   self.questions_attempted)
+
+
+
+
+

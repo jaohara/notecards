@@ -7,7 +7,7 @@
 
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-        <link href="https://fonts.googleapis.com/css?family=Raleway:300:500:800|Space+Mono:700"
+        <link href="https://fonts.googleapis.com/css?family=Raleway:400,500,800"
             rel="stylesheet" type="text/css">
 
         <!-- H5BP -->
@@ -48,7 +48,19 @@
 
                     <ul class="user-menu">
                         <li class="user-menu-item">
+                            <a href="{% url 'user_messages'%}">Messages</a>
+                        </li>
+                        <li class="user-menu-item">
                             <a href="{% url 'user_profile' pk=user.pk%}">Profile</a>
+                        </li>
+                        <li class="user-menu-item">
+                            <a href="{% url 'user_settings' pk=user.pk%}">Settings</a>
+                        </li>
+                        <li class="user-menu-item">
+                            <a href="{% url 'user_stats' pk=user.pk%}">Stats</a>
+                        </li>
+                        <li class="user-menu-item">
+                            <a href="{% url 'user_list'%}">User List</a>
                         </li>
                         <li class="user-menu-item">
                             <a href="{% url 'logout'%}">Logout</a>

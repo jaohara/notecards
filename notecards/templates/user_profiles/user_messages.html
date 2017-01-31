@@ -1,0 +1,24 @@
+{% extends "user_profiles/user_base.html" %}
+
+{% block user_content %}
+
+    {% for message in inbox %}
+
+        <div>
+            <span><strong>{{message.subject}}</strong></span><br />
+            <span><strong>Sender:</strong> {{message.sender}}</span><br />
+            <span>Sent on <strong>{{message.message_date}}</strong></span>
+
+            <p>
+                {{message.message_body}}
+            </p>
+
+        </div>
+
+    {% empty %}
+
+        No Messages to display
+
+    {% endfor %}
+
+{% endblock %}

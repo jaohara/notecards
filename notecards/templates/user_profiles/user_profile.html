@@ -1,28 +1,17 @@
-{% extends "notecards/base.html" %}
+{% extends "user_profiles/user_base.html" %}
 
 {% load staticfiles %}
 
-{% block content %}
+{% block user_content%}
 
-<div class="user-profile-wrapper">
+    <p>Decks created: {{decks|length}}</p>
 
-    <img class="user-icon" src="{% static 'img/notecards-user-icon-1.png' %}">
-
-    <div class="user-profile-info">
-        <h1>{{selected_user.username}}</h1>
-        <p>Site member since {{selected_user.date_joined}}</p>
-
-        <p>Decks created: {{decks|length}}</p>
-
-        <ul>
-            {% for deck in decks %}
-            <li><a href="{% url 'deck_view' pk=deck.pk%}">{{deck.title}}</a></li>
-            {% empty %}
-            <li>No decks to display</li>
-            {% endfor %}
-        </ul>
-    </div>
-
-</div>
+    <ul>
+        {% for deck in decks %}
+        <li><a href="{% url 'deck_view' pk=deck.pk%}">{{deck.title}}</a></li>
+        {% empty %}
+        <li>No decks to display</li>
+        {% endfor %}
+    </ul>
 
 {% endblock %}

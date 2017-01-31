@@ -1,0 +1,21 @@
+{% extends "notecards/base.html" %}
+
+{% load staticfiles %}
+
+{% block content %}
+
+<div class="user-profile-wrapper">
+
+    <img class="user-icon" src="{% static 'img/notecards-user-icon-1.png' %}">
+
+    <div class="user-profile-info">
+        <h1>{{selected_user.username}}</h1>
+        <p>Site member since {{selected_user.date_joined}}</p>
+
+        {% block user_content%}
+        {% endblock %}
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends "notecards/base.html" %}
+
+{% block content %}
+<!-- this shares a lot of functionality with deck_list -->
+    {% if user_query == None%}
+    <h1>All Users</h1>
+    {% else %}
+    <h1>Search results for "{{user_query}}:"</h1>
+    <p>{{users|length}} user{{users|pluralize}} found.</p>
+    {% endif %}
+
+    {% if users %}
+    <table class="user-table">
+
+        <tr class="user-table-header">
+            {% if sort_method == 'username' and sort_order == 'descending'%}
+            <th>
+                <a href="{% url 'user_list' sort_method='username' sort_order='ascending'%}">
+                    User &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+            </th>
+            {% else %}
+            <th>
+                <a href="{% url 'user_list' sort_method='username' sort_order='descending'%}">
+                    User &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </th>
+            {% endif %}
+
+            {% if sort_method == 'date_joined' and sort_order == 'descending'%}
+            <th>
+                <a href="{% url 'user_list' sort_method='date_joined' sort_order='ascending'%}">
+                    Date Joined &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+            </th>
+            {% else %}
+            <th>
+                <a href="{% url 'user_list' sort_method='date_joined' sort_order='descending'%}">
+                    Date Joined &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </th>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+            <th>Send Message</th>
+            {% endif %}
+        </tr>
+
+        {% for user_entry in users %}
+        <tr class="user-table-row">
+            <td><a href="{% url 'user_profile' pk=user_entry.pk%}">{{user_entry.username}}</a></td>
+            <td>{{user_entry.date_joined}}</td>
+
+            <td class="centered-cell">
+                {% if user.is_authenticated and user.pk != user_entry.pk%}
+                <!-- this will be a hyperlink -->
+                <span class="glyphicon glyphicon-envelope"></span>
+                {% else %}
+                <span class="glyphicon glyphicon-remove"
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+
+    </table>
+    {% endif %}
+
+{% endblock %}

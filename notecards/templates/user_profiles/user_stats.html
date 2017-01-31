@@ -1,0 +1,25 @@
+{% extends "user_profiles/user_base.html" %}
+
+{% load staticfiles %}
+
+{% block user_content %}
+
+    <h1>User Statistics</h1>
+
+    <h2>Overall Quiz Stats</h2>
+    <ul class="user-stats-list">
+        <li><strong>Quizzes Attempted:</strong> {{quizzes_attempted}}</li>
+        <li><strong>Quizzes Completed:</strong> {{quizzes_completed}}</li>
+        <li><strong>Quiz Completion Rate:</strong> {{quiz_completion_rate}}%</li>
+        <li><strong>Total Time Spent in Quizzes:</strong> {{quiz_duration_minutes}}:{{quiz_duration_seconds}}</li>
+    </ul>
+
+    <h2>Overall Question Stats</h2>
+    <ul>
+        <li><strong>Questions Attempted:</strong> {{questions_attempted}}</li>
+        <li><strong>Questions Correct:</strong> {{questions_correct}}</li>
+        <li><strong>Aggregate Question Score:</strong> {{question_correct_percentage}}%</li>
+    </ul>
+
+{% endblock %}
+

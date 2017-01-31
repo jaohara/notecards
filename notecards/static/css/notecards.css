@@ -432,72 +432,79 @@ a .glyphicon-remove{
 }
 
 /* ------------------------------------------------------
-    Deck List Table - deck_view.html
+    Deck List Table / User List Table
+        notecards/deck_list.html, 
+        user_profiles/user_list.html 
 ------------------------------------------------------ */
 
-table.deck-table{
+table.deck-table, table.user_table{
     font-size: 1.2em;
     margin: 1.0em 0;
     width: 100%;
 }
 
-.deck-table tr.deck-table-row{
+.deck-table tr.deck-table-row, .user_table tr.user-table-row{
     transition: background .1s;
 }
 
 
-.deck-table tr.deck-table-row:hover{
+.deck-table tr.deck-table-row:hover, .user-table tr.user-table-row:hover{
     /*background-color: rgba(255,223,165,.4);*/
     background: rgba(179, 212, 251, 0.5);;
 }
 
-.deck-table-header th{
+.deck-table-header th, .user-table-header th{
     padding: .6em .6em .6em .6em;
 }
 
-.deck-table-header th:first-child, .deck-table-header th:last-child{
+.deck-table-header th:first-child, .deck-table-header th:last-child,
+.user-table-header th:first-child, .user-table-header th:last-child{
     padding: .6em .6em .6em .6em;
 }
 
-.deck-table-header th:hover{
+.deck-table-header th:hover, .user-table-header th:hover{
     background-color: #ddd;
 }
 
-.deck-table-header th:hover span.glyphicon{
+.deck-table-header th:hover span.glyphicon, .user-table-header th:hover span.glyphicon{
     opacity: 0.75;
 }
 
-.deck-table a{
+.deck-table a, .user-table a{
     display: block;
     padding: .6em .6em .6em .6em;
     text-decoration: none;
 }
 
 
-.deck-table tr:first-child{
+.deck-table tr:first-child, .user-table tr:first-child{
     background-color: #eee;
 }
 
+.deck-table tr, .deck-table td, .user-table tr, .user-table td{
+    min-width: 6em;
+}
 
-.deck-table td{
+
+.deck-table td, .user-table td{
     /*border: 1px solid #bbb;*/
     border-top: 1px solid #bbb;
 }
 
-.deck-table th, .deck-table td{
+.deck-table th, .deck-table td, .user-table th, .user-table td{
     /*padding: .6em .3em .6em .6em;*/
 }
 
-.deck-table th a{
+.deck-table th a, .user-table th a{
     color: rgba(0,0,0,1.0);
     padding: 0;
 }
 
-.deck-table-row td:last-child{
+.deck-table-row td:last-child, .user-table-row td:last-child{
     text-align: center;
 }
 
-td span.glyphicon-lock{
+td span.glyphicon-lock, td span.glyphicon-envelope{
     color: rgba(0,0,0,0.4);
 }
 
@@ -505,13 +512,13 @@ td span.glyphicon-lock{
     text-align: center;
 }
 
-table.deck-table th span.glyphicon{
+table.deck-table th span.glyphicon, table.user-table th span.glyphicon{
     color: rgba(0,0,0,0.8);
     font-size: 0.5em;
     opacity: 0.0;
 }
 
-table.deck-table td span.glyphicon{
+table.deck-table td span.glyphicon, table.user-table td span.glyphicon{
     font-size: 0.8em;
 }
 

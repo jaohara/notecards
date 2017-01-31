@@ -1,0 +1,15 @@
+{% extends "user_profiles/user_base.html" %}
+
+{% block user_content %}
+
+    <h2>Change Password</h2>
+    <form method="POST" >
+        {% csrf_token %}
+
+        {{password_form.as_p}} 
+        <input type="submit" value="Change Password" />
+    </form>
+
+    <h2>Change Email</h2>
+
+{% endblock %}

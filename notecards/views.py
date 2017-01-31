@@ -1,17 +1,20 @@
 import random
+import time
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import authenticate, login
 from django.core import serializers
+from django.db.models.functions import Lower
 from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.template import RequestContext
 from django.utils import timezone
 
 from django.contrib.auth.models import User
-from .models import Tag, Deck, Card
+from .models import Card, Deck, Message, QuizResult, Tag, UserProfile
 from .forms import CardForm, DeckForm, DeckEditForm, UserForm
 
-from .utils import reset_session_cards, reset_session_quiz, make_elipsis
+from .utils import reset_session_cards, reset_session_quiz, make_elipsis, save_quiz_results
 
 
 # This might belong in a differen views.py, but it's here for now.
@@ -34,6 +37,7 @@ def handler500(request):
     return respose
 
 def deck_list(request, sort_method="created_date", sort_order="ascending", deck_query=None):
+    
     if request.GET.get('search'):
         deck_query = request.GET["search"]
 
@@ -50,12 +54,13 @@ def deck_list(request, sort_method="created_date", sort_order="ascending", deck_
     if sort_method == "author":
         sort_method = "author__username"
 
-    reset_session_quiz(request)
+    save_quiz_results(request)
     reset_session_cards(request)
     if deck_query is not None:
         # flesh this out in the future to be more robust, better pattern matching etc.
         decks = Deck.objects.filter(title__icontains=deck_query).order_by("{}{}".format(order_switch,sort_method))
     else:
+        # Here's where we need to use Lower() to avoid case affecting sort order
         decks = Deck.objects.order_by("{}{}".format(order_switch,sort_method))
     form = DeckForm()
     return render(request, 'notecards/deck_list.html', {'decks': decks,
@@ -65,6 +70,7 @@ def deck_list(request, sort_method="created_date", sort_order="ascending", deck_
                                                         'sort_order': sort_order,})
 
 def deck_view(request, pk):
+    
 
     quiz_results = ""
     feedback_type = "none"
@@ -80,7 +86,7 @@ def deck_view(request, pk):
                                                        quiz_attempted,
                                                        quiz_percentage)
 
-    reset_session_quiz(request)
+    save_quiz_results(request)
     reset_session_cards(request)
     deck = get_object_or_404(Deck, pk=pk)
     cards = Card.objects.filter(deck__pk=deck.pk)
@@ -98,9 +104,10 @@ def deck_view(request, pk):
 
 @login_required
 def deck_review(request, pk, card_index=0):
+    save_quiz_results(request)
+
     card_index = int(card_index)
 
-    
     if 'cards' not in request.session:
         deck = get_object_or_404(Deck, pk=pk)
         card_set = Card.objects.filter(deck__title=deck.title)
@@ -155,9 +162,10 @@ def deck_quiz(request, deck_pk, answer_choice=None):
         request.session['quiz_correct'] = 0
         request.session['quiz_count'] = quiz_deck.card_count
         request.session['quiz_deck_pk'] = deck_pk
-        request.session['quiz_finished'] = 0
+        request.session['quiz_finished'] = False
         request.session['quiz_index'] = quiz_index
         request.session['quiz_name'] = quiz_deck.title
+        request.session['quiz_start_time'] = int(round(time.time()*1000))
 
     # initialize method vars
     feedback_text   = ""
@@ -341,7 +349,10 @@ def create_deck(request):
 @login_required
 def delete_deck(request, pk):
     deck = get_object_or_404(Deck, pk=pk)
-    deck.delete()
+
+    if request.user == deck.author:
+        deck.delete()
+
     return redirect('/')
 
 @login_required
@@ -418,6 +429,7 @@ def remove_card_from_deck(request, pk):
     deck.remove_card()
     return redirect('deck_view', pk=deck.pk)
 
+
 def create_user(request):
     if request.method == "POST":
         # here's where we handle the submitted data
@@ -435,28 +447,122 @@ def create_user(request):
 
 
 
+@login_required
+def user_messages(request):
+    # why do I keep grabbing pks here? shouldn't I just check against the currently
+    # logged in user?
+
+    inbox = Message.objects.filter(recipient=request.user.pk)
+    outbox = Message.objects.filter(sender=request.user.pk)
+
+    return render(request, 'user_profiles/user_messages.html', {'inbox': inbox,
+                                                                'outbox': outbox,
+                                                                'selected_user': request.user})
+
 # I don't know if you need to be logged in for any of this, but it would
 # probably be the difference between viewing a profile and editing your own
-
 @login_required
 def user_profile(request, pk):
     selected_user = get_object_or_404(User, pk=pk)
     decks = Deck.objects.filter(author=selected_user.pk)
 
-    return render(request, 'user_profiles/user_profile.html', {'selected_user': selected_user,
-                                                               'decks': decks,})
+    return render(request, 'user_profiles/user_profile.html', {'decks': decks,
+                                                               'selected_user': selected_user,})
+
+@login_required
+def user_settings(request, pk):
+    selected_user = get_object_or_404(User, pk=pk)
+    if request.method == "POST":
+        password_form = PasswordChangeForm(request.user, data=request.POST)
+        if password_form.is_valid():
+            password_form.save()
+            update_session_auth_hash(request, password_form.user)
+            redirect('/')
+
+    password_form = PasswordChangeForm(request.user)
+
+    return render(request, 'user_profiles/user_settings.html', {'password_form': password_form,
+                                                                'selected_user': selected_user,})
 
 @login_required
 def user_stats(request, pk):
-    # placeholder
-    return redirect('/')
+    selected_user = get_object_or_404(User, pk=pk)
+    stats = QuizResult.objects.filter(user=selected_user.pk)
+
+    total_questions_correct = 0
+    total_questions_attempted = 0
+    total_quiz_duration = 0
+    total_quizzes_attempted = len(stats)
+    total_quizzes_completed = 0
+
+
+    for stat in stats:
+        if stat.quiz_completed:
+            total_quizzes_completed += 1
+
+        total_questions_correct += stat.questions_correct
+        total_questions_attempted += stat.questions_attempted
+        total_quiz_duration += stat.quiz_duration
+
+    quiz_duration_minutes = '{:.0f}'.format((total_quiz_duration/1000)//60)
+    quiz_duration_seconds = '{:.2f}'.format((total_quiz_duration/1000)%60)
+
+    if total_quizzes_attempted > 0:
+        quiz_completion_rate = '{:.2f}'.format(total_quizzes_completed/total_quizzes_attempted*100.00)
+    else:
+        quiz_completion_rate = '0.00'
+
+    if total_questions_attempted > 0:
+        question_correct_percentage = '{:.2f}'.format(total_questions_correct/total_questions_attempted*100.00)
+    else:
+        question_correct_percentage = '0.00'
+
+    return render(request, 'user_profiles/user_stats.html', {'question_correct_percentage': question_correct_percentage,
+                                                             'questions_attempted': total_questions_attempted,
+                                                             'questions_correct': total_questions_correct,
+                                                             'quiz_completion_rate': quiz_completion_rate,
+                                                             'quiz_duration': total_quiz_duration,
+                                                             'quiz_duration_minutes': quiz_duration_minutes,
+                                                             'quiz_duration_seconds': quiz_duration_seconds,
+                                                             'quizzes_attempted': total_quizzes_attempted,
+                                                             'quizzes_completed': total_quizzes_completed,
+                                                             'selected_user': selected_user,
+                                                             'stats': stats,})
+
 
 @login_required
 def user_decks(request, pk):
     # placeholder
     return redirect('/')
 
+# this shares a little more than I'd like with deck_list
 @login_required
-def user_list(request):
-    # placeholder
-    return redirect('/')
+def user_list(request, sort_method="date_joined", sort_order="ascending", user_query=None):
+    # no current way to make a user_query
+
+    if request.GET.get('search'):
+        deck_query = request.GET["search"]
+
+    accepted_methods = ["username", "date_joined"]
+
+    order_switch = ""
+
+    if sort_order == "descending":
+        order_switch = "-"
+
+    if sort_method not in accepted_methods:
+        sort_method = "created_date"
+
+    save_quiz_results(request)
+    reset_session_cards(request)
+
+    if user_query is not None:
+        users = User.objects.filter(username__icontains=user_query).order_by("{}{}".format(order_switch,sort_method))
+    else:
+        # Here's where we need to use Lower() to avoid case affecting sort order
+        users = User.objects.order_by("{}{}".format(order_switch,sort_method))
+
+    return render(request, 'user_profiles/user_list.html', {'sort_method': sort_method,
+                                                            'sort_order': sort_order,
+                                                            'user_query': user_query,
+                                                            'users': users,})

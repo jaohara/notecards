@@ -14,9 +14,14 @@ urlpatterns =[
 
     url(r'^accounts/create/$', views.create_user, name='create_user'),
     url(r'^accounts/(?P<pk>\d+)/$', views.user_profile, name='user_profile'),
+    url(r'^accounts/messages/$', views.user_messages, name='user_messages'),
+    url(r'^accounts/(?P<pk>\d+)/settings/$', views.user_settings, name='user_settings'),
     url(r'^accounts/(?P<pk>\d+)/stats/$', views.user_stats, name='user_stats'),
     url(r'^accounts/(?P<pk>\d+)/decks/$', views.user_decks, name='user_decks'),
     url(r'^accounts/all/$', views.user_list, name='user_list'),
+    url(r'^accounts/all/(?P<sort_method>(username|date_joined))/sort/(?P<sort_order>(ascending|descending))/$',
+        views.user_list, name='user_list'),
+    url(r'^accounts/all/(?P<sort_method>(username|date_joined))/$', views.user_list, name='user_list'),
 
     url(r'^deck/(?P<pk>\d+)/$', views.deck_view, name='deck_view'),
     url(r'^deck/(?P<pk>\d+)/add/$', views.add_card_to_deck, name='add_card_to_deck'),
