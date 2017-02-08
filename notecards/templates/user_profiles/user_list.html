@@ -53,8 +53,9 @@
 
             <td class="centered-cell">
                 {% if user.is_authenticated and user.pk != user_entry.pk%}
-                <!-- this will be a hyperlink -->
-                <span class="glyphicon glyphicon-envelope"></span>
+                <a href="{% url 'user_write_message' recipient_pk=user_entry.pk%}">
+                    <span class="glyphicon glyphicon-envelope"></span>
+                </a>
                 {% else %}
                 <span class="glyphicon glyphicon-remove"
                 {% endif %}

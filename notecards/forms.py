@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import Tag, Deck, Card
+from .models import Tag, Deck, Card, Message
 
 class CardForm(forms.ModelForm):
 
@@ -40,5 +40,11 @@ class DeckEditForm(forms.ModelForm):
     class Meta:
         model = Deck
         fields = ('title', 'description',)
+
+class MessageForm(forms.ModelForm):
+
+    class Meta:
+        model = Message
+        fields = ('recipient', 'subject', 'message_body')
 
 # should the form to add tags be part of the deck creation form or on the deck_view page?

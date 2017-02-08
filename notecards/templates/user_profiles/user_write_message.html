@@ -1,0 +1,14 @@
+{% extends 'user_profiles/user_base.html' %}
+
+{% block user_content %}
+
+    <h2>Compose a new Message</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {{message_form.as_p}}
+        <input type="submit" value="Send Message" />
+    </form>
+
+{% endblock %}

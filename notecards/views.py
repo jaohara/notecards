@@ -12,7 +12,7 @@ from django.utils import timezone
 
 from django.contrib.auth.models import User
 from .models import Card, Deck, Message, QuizResult, Tag, UserProfile
-from .forms import CardForm, DeckForm, DeckEditForm, UserForm
+from .forms import CardForm, DeckForm, DeckEditForm, UserForm, MessageForm
 
 from .utils import reset_session_cards, reset_session_quiz, make_elipsis, save_quiz_results
 
@@ -448,16 +448,38 @@ def create_user(request):
 
 
 @login_required
-def user_messages(request):
+def user_messages(request, feedback_type=None, feedback_text=None):
     # why do I keep grabbing pks here? shouldn't I just check against the currently
     # logged in user?
 
-    inbox = Message.objects.filter(recipient=request.user.pk)
+    inbox = Message.objects.filter(recipient=request.user.pk).order_by("-message_date")
     outbox = Message.objects.filter(sender=request.user.pk)
 
     return render(request, 'user_profiles/user_messages.html', {'inbox': inbox,
                                                                 'outbox': outbox,
                                                                 'selected_user': request.user})
+
+@login_required
+def user_write_message(request, recipient_pk=None):
+    if request.method == "POST":
+        message_form = MessageForm(request.POST)
+        if message_form.is_valid():
+            new_message = Message(sender=request.user,
+                                  recipient=message_form.cleaned_data.get('recipient'),
+                                  subject=message_form.cleaned_data.get('subject'),
+                                  message_body= message_form.cleaned_data.get('message_body'))
+            new_message.save()
+            feedback_text = "Message to {} sent successfully.".format(message_form.cleaned_data.get('recipient'))
+            """
+            return render(request, 'user_profiles/user_messages.html', {'feedback_type': 'positive',
+                                                                        'feedback_text': feedback_text,
+                                                                        'selected_user': request.user})
+            """
+            return user_messages(request, 'positive', feedback_text)
+    
+    message_form = MessageForm(initial={'recipient': recipient_pk})
+
+    return render(request, 'user_profiles/user_write_message.html', {'message_form': message_form})
 
 # I don't know if you need to be logged in for any of this, but it would
 # probably be the difference between viewing a profile and editing your own
