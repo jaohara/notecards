@@ -20,16 +20,19 @@
     font-weight: 200;
     margin: 0;
     padding: 0;
+
+    /* probably way more tacky than I once thought
     text-shadow: 1px 1px rgba(0,0,0,0.2);
+    */
 }
 
 body {
     min-height: 100vh;
 }
-/*
-.content.container{
-    min-height: 82vh;
-}*/
+
+.content.container h1{
+    font-size: 2.6em;
+}
 
 /* ------------------------------------------------------
     Navigation 
@@ -163,7 +166,7 @@ ul.user-menu{
     min-width: 160px;
     position: absolute;
     right: 0px;
-    z-index: 1;
+    z-index: 151;
 }
 
 ul.user-menu li.user-menu-item a{
@@ -206,6 +209,9 @@ ul.user-menu li.user-menu-item a:hover{
     Deck Meta & Card Meta
 ------------------------------------------------------ */
 
+
+div.deck-meta-top-pane{ display: flex; }
+
 div.deck-meta, div.card-meta{
     min-height: 64px;
     margin: 20px 0px;
@@ -226,7 +232,7 @@ div.deck-meta p span.deck-origin{
 
 div.deck-meta h1, div.card-meta h1{
     float: left;
-    margin: 0px 0px 8px 0px;
+    margin: 8px 0px 8px 0px;
     width: 50%;
 }
 
@@ -348,7 +354,7 @@ div.feedback-neutral{
     width: 90%;
 }
 
-.deck-form label{
+.deck-form label, .tag-form label{
     display: none;
 }
 
@@ -368,6 +374,54 @@ div.feedback-neutral{
     margin: 0 2%;
     min-height: 50px;
     padding: .8em;
+}
+
+.tag-form{
+    display: inline;
+    margin: 0px;
+    padding: 0px;
+}
+
+.tag-form input{
+    border: 0px;
+    border-bottom-right-radius: 0px 0px;
+    /*border-right: 1px solid rgba(0,75,107,1.0);*/
+    border-top-right-radius: 0px 0px;
+    margin-right: 0px;
+    outline: none;
+    width: 0em;
+}
+
+/* ------------------------------------------------------
+    Tags
+------------------------------------------------------ */
+
+span.deck-tag, .tag-form input{
+    background: rgba(179, 212, 251, 0.5);
+    border-radius: 4px;
+    color: rgba(0,75,107,1.0);
+    margin-right: .5em;
+    padding: .25em .4em;
+}
+
+span.deck-tag a{
+    text-decoration: none;
+    text-decoration-style: dashed;
+}
+
+span.deck-tag a:hover{
+    text-decoration: underline;
+}
+
+span.deck-tag a span.glyphicon.glyphicon-remove{
+    font-size: 0.7em;
+    color: rgba(0,75,107,0.6);
+    padding: .25em;
+    transition: color .2s;
+}
+
+span.deck-tag a span.glyphicon.glyphicon-remove:hover{
+    color: rgba(0,75,107,1.0);
 }
 
 /* ------------------------------------------------------
@@ -418,6 +472,8 @@ h1, h2, h3, h4, h5 {
     font-weight: 800;
 }
 
+
+
 /* ------------------------------------------------------
     Hyperlinks
 ------------------------------------------------------ */
@@ -439,7 +495,7 @@ a .glyphicon-remove{
 
 table.deck-table, table.user_table{
     font-size: 1.2em;
-    margin: 1.0em 0;
+    margin: 1.0em 0em;
     width: 100%;
 }
 
@@ -589,7 +645,7 @@ a.card-edit-link{
     Login Page & Deck Edit Forms 
 ------------------------------------------------------ */
 
-div.login-wrapper, div.deck-edit-wrapper, div.user-profile-wrapper, div.http-error-wrapper{
+div.login-wrapper, div.deck-edit-wrapper, div.http-error-wrapper{
     border: 1px solid #bbb;
     box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
     margin: 2.0em auto;
@@ -625,6 +681,7 @@ div.login-wrapper input.login-submit, div.deck-edit-wrapper input.edit-submit{
     padding: .8em;
     width: 66%; 
 }
+
 
 /* ------------------------------------------------------
     Quiz CSS
@@ -768,6 +825,8 @@ div.error-content h1{
     margin-top: 0px;
 }
 
+
+
 /* ------------------------------------------------------
     User Profile
 ------------------------------------------------------ */
@@ -794,27 +853,72 @@ div.error-content h1{
 
 
 
-/*
-    flexbox layout?
-*/
-
-
-
-
-
-
-
-
-
 div.user-profile-wrapper{
     align-items: flex-start;
     display: flex;
+    margin: 1.0em 0em;
     min-height: 182px;
-    width: 80%;
+    width: 100%;
 }
+
+div.user-profile-info, div.user-profile-content{
+    padding: 1.0em;
+}
+
+div.user-profile-info{
+    width: 25%;
+    text-align: center;
+}
+div.user-profile-info a.user-profile-link{
+    color: #222;
+    text-decoration: none;
+}
+div.user-profile-info p{
+    font-size: 1.0em;
+}
+
+ul.user-profile-info-nav{
+    font-size: 1.4em;
+    list-style-type: none;
+    text-align: left;
+}
+
+ul.user-profile-info-nav a{
+    display: block;
+    text-decoration: none;
+}
+
+ul.user-profile-info-nav a span{
+    margin-right: 1.0em;
+}
+
+ul.user-profile-info-nav li{
+    border-bottom: 1px solid #ddd;
+    margin: .25em 0em;
+    padding: .5em;
+}
+
+ul.user-profile-info-nav li:hover{
+    background: rgba(179, 212, 251, 0.5);
+}
+
 
 div.user-profile-wrapper img.user-icon {
     align-self: flex-start;
     border-radius: 50%;
-    margin-right: 2.0em;
 }
+
+ul.user-profile-info-nav li a span.mail-count{ 
+    background-color: rgb(250, 54, 68);
+    border-radius: 10px;
+    box-shadow: 1px 1px 0px rgba(0,0,0,0.2);
+    padding: .1em .25em;
+    color: #fff; 
+}
+
+
+/* Profile glyphicons */
+ul.user-profile-info-nav li a span.glyphicon.glyphicon-th-list{ color:rgb(255, 150, 147); }
+ul.user-profile-info-nav li a span.glyphicon.glyphicon-stats{ color: rgb(124, 215, 130); }
+ul.user-profile-info-nav li a span.glyphicon.glyphicon-envelope{ color: rgb(219, 126, 177); }
+ul.user-profile-info-nav li a span.glyphicon.glyphicon-cog{ color: rgb(113, 113, 113); }

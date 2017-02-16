@@ -1,5 +1,7 @@
 {% extends 'notecards/base.html' %}
 
+{% load staticfiles %}
+
 {% block menu %}
 {% endblock %}
 
@@ -8,8 +10,11 @@
 {% endblock %}
 
 {% block content %}
+    <script src="{% static 'js/notecards-deck-view-jquery.js' %}"></script>
+
     <div class="deck-meta">
 
+        <div class="deck-meta-top-pane">
         <h1>{{deck.title}}</h1>
         <div class="deck-controls">
             {% if user == deck.author %}
@@ -42,6 +47,7 @@
             </a>
             {% endif %}
         </div>
+        </div>
 
         <p>
             <span class="deck-origin">Created by {{deck.author}} on {{deck.created_date}}</span>
@@ -52,6 +58,29 @@
         {% if deck.description|length > 0 %}
         <p class="deck-description">{{deck.description}}</p>
         {% endif %}
+
+        <form method="POST" class="tag-form" action="{% url 'add_tag_to_deck' pk=deck.pk%}">
+            <p class="deck-tags">
+                <strong>Tags:</strong>
+
+                {% if deck.tags %}
+                    {% for tag in deck.tags.all %}
+                        <span class="deck-tag">
+                            <a href="{% url 'tag_deck_list' tag_word=tag.word %}">{{tag.word}}</a>
+                            <a href="{% url 'remove_tag_from_deck' pk=deck.pk tag_word=tag.word%}">
+                            <span class="glyphicon glyphicon-remove"></span></a>
+                        </span>
+                    {% endfor %}
+                {% else %}
+                    None
+                {% endif %}
+
+                {% if user == deck.author %}
+                        {% csrf_token %}
+                        {{tag_form}}<a class="tag-input-toggle"href=""><span class="glyphicon glyphicon-plus"></span></a>
+                {% endif %}
+        </p>
+        </form>
     </div>
     <div class="deck-wrapper">
 
@@ -86,7 +115,7 @@
     <h2>Add a Card</h2>
     <form method="POST" class="card-form" action="{% url 'add_card_to_deck' pk=deck.pk%}">
         {% csrf_token %}
-        {{ form }}
+        {{ card_form }}
         <button type="submit" class="save btn btn-default">Add to Deck</button>
     </form>
     {% endif %}

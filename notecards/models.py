@@ -31,6 +31,14 @@ class Deck(models.Model):
             self.card_count -= 1
             self.save()
 
+    def add_tag(self, tag):
+        self.tags.add(tag)
+        self.save()
+
+    def remove_tag(self, tag):
+        self.tags.remove(tag)
+        self.save()
+
     def log_modification(self):
         self.modified_date = timezone.now
         self.save()

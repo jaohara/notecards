@@ -6,12 +6,43 @@
 
 <div class="user-profile-wrapper">
 
-    <img class="user-icon" src="{% static 'img/notecards-user-icon-1.png' %}">
-
     <div class="user-profile-info">
-        <h1>{{selected_user.username}}</h1>
+        <a href="{% url 'user_profile' pk=selected_user.pk%}" class="user-profile-link">
+            <img class="user-icon" src="{% static 'img/notecards-user-icon-1.png' %}">
+            <h1>{{selected_user.username}}</h1>
+        </a>
         <p>Site member since {{selected_user.date_joined}}</p>
 
+        <ul class="user-profile-info-nav">
+            <li>
+                <a href="{% url 'user_decks' pk=selected_user.pk %}">
+                <span class="glyphicon glyphicon-th-list"></span>Decks</a>
+            </li>
+            <li>
+                <a href="{% url 'user_stats' pk=selected_user.pk%}">
+                <span class="glyphicon glyphicon-stats"></span>Stats</a>
+            </li>
+            {% if selected_user != user %}
+            <li>
+                <a href="{% url 'user_write_message' recipient_pk=selected_user.pk%}"><span class="glyphicon glyphicon-envelope"></span>Send Message</a>
+            </li>
+            {% else %}
+            <li>
+                <a href="{% url 'user_messages' %}">
+                <span class="glyphicon glyphicon-envelope"></span>Inbox - 
+                <span class="mail-count">{{mail_count}}</span></a>
+            </li>
+            <li>
+                <a href=""><span class="glyphicon glyphicon-user"></span>Edit Profile</a>
+            </li>
+            <li>
+                <a href=""><span class="glyphicon glyphicon-cog"></span>Edit Settings</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div class="user-profile-content">
         {% block user_content%}
         {% endblock %}
     </div>

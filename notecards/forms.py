@@ -15,13 +15,6 @@ class DeckForm(forms.ModelForm):
         model = Deck
         fields = ('title',)
 
-class UserForm(forms.ModelForm):
-
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'password',)
-        widgets = {'password': forms.PasswordInput()}
-
 class DeckEditForm(forms.ModelForm):
 
     """
@@ -47,4 +40,16 @@ class MessageForm(forms.ModelForm):
         model = Message
         fields = ('recipient', 'subject', 'message_body')
 
-# should the form to add tags be part of the deck creation form or on the deck_view page?
+class UserForm(forms.ModelForm):
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password',)
+        widgets = {'password': forms.PasswordInput()}
+
+class TagForm(forms.ModelForm):
+
+    class Meta:
+        model = Tag
+        fields = ('word',)
+

@@ -1,0 +1,80 @@
+{% extends 'user_profiles/user_base.html' %}
+
+
+{% block user_content %}
+
+    <h1>Decks</h1>
+    <p>{{selected_user.username}} has created {{decks|length}} notecard deck{{decks|pluralize}}.
+
+    {% if decks %}
+
+    <table class="deck-table">
+
+        <!-- this is pretty gnarly, because it's the deck_list view copied near verbatim.-->
+        <tr class="deck-table-header">
+            {% if sort_method == 'title' and sort_order == 'descending'%}
+            <th>
+                <a href="{% url 'user_decks' pk=selected_user.pk sort_method='title' sort_order='ascending'%}">
+                    Deck &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+            </th>
+            {% else %}
+            <th>
+                <a href="{% url 'user_decks' pk=selected_user.pk sort_method='title' sort_order='descending'%}">
+                    Deck &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </th>
+            {% endif %}
+
+            {% if sort_method == 'card_count' and sort_order == 'descending'%}
+            <th>
+                <a href="{% url 'user_decks' pk=selected_user.pk sort_method='card_count' sort_order='ascending'%}">
+                    Cards &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+            </th>
+            {% else %}
+            <th>
+                <a href="{% url 'user_decks' pk=selected_user.pk sort_method='card_count' sort_order='descending'%}">
+                    Cards &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </th>
+            {% endif %}
+
+            {% if sort_method == 'created_date' and sort_order == 'descending'%}
+            <th>
+                <a href="{% url 'user_decks' pk=selected_user.pk sort_method='created_date' sort_order='ascending'%}">
+                    Created &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
+                </a>
+            </th>
+            {% else %}
+            <th>
+                <a href="{% url 'user_decks' pk=selected_user.pk sort_method='created_date' sort_order='descending'%}">
+                    Created &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
+                </a>
+            </th>
+            {% endif %}
+
+            {% if user == selected_user %}
+            <th>Remove?</th>
+            {% endif %}
+        </tr>
+
+        {% for deck in decks %}
+        <tr class="deck-table-row">
+            <td><a href="{% url 'deck_view' pk=deck.pk %}">{{deck.title}}</a></td>
+            <td class="centered-cell">{{deck.card_count}}</td>
+            <td>{{deck.created_date}}</td>
+            {% if user == deck.author %}
+            <td class="centered-cell">
+                <a class="delete-link" href="{% url 'delete_deck' pk=deck.pk %}">
+                    <span class="glyphicon glyphicon-remove"></span>
+                </a>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    {% endif %}
+
+{% endblock %}

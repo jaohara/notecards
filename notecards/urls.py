@@ -20,6 +20,11 @@ urlpatterns =[
     url(r'^accounts/(?P<pk>\d+)/settings/$', views.user_settings, name='user_settings'),
     url(r'^accounts/(?P<pk>\d+)/stats/$', views.user_stats, name='user_stats'),
     url(r'^accounts/(?P<pk>\d+)/decks/$', views.user_decks, name='user_decks'),
+    url(r'^accounts/(?P<pk>\d+)/decks/(?P<sort_method>(title|created_date|card_count))/$', 
+        views.user_decks, name='user_decks'),
+    url(r'^accounts/(?P<pk>\d+)/decks/(?P<sort_method>(title|created_date|card_count))/sort/(?P<sort_order>(ascending|descending))/$', 
+        views.user_decks, name='user_decks'),
+    url(r'^accounts/$', views.user_list, name='user_list'),
     url(r'^accounts/all/$', views.user_list, name='user_list'),
     url(r'^accounts/all/(?P<sort_method>(username|date_joined))/sort/(?P<sort_order>(ascending|descending))/$',
         views.user_list, name='user_list'),
@@ -27,6 +32,8 @@ urlpatterns =[
 
     url(r'^deck/(?P<pk>\d+)/$', views.deck_view, name='deck_view'),
     url(r'^deck/(?P<pk>\d+)/add/$', views.add_card_to_deck, name='add_card_to_deck'),
+    url(r'^deck/(?P<pk>\d+)/add-tag/$', views.add_tag_to_deck, name='add_tag_to_deck'),
+    url(r'^deck/(?P<pk>\d+)/remove-tag/(?P<tag_word>.+)/$', views.remove_tag_from_deck, name='remove_tag_from_deck'),
     url(r'^deck/(?P<pk>\d+)/remove/$', views.remove_card_from_deck, name='remove_card_from_deck'),
     url(r'^deck/create/$', views.create_deck, name='create_deck'),
     url(r'^deck/(?P<pk>\d+)/delete/$', views.delete_deck, name='delete_deck'),
@@ -36,6 +43,8 @@ urlpatterns =[
     url(r'^deck/(?P<pk>\d+)/review/card/(?P<card_index>\d+)/$', views.deck_review, name='deck_review'),
     url(r'^deck/(?P<deck_pk>\d+)/quiz/$', views.deck_quiz, name='deck_quiz'),
     url(r'^deck/(?P<deck_pk>\d+)/quiz/answer/(?P<answer_choice>\d+)', views.deck_quiz, name='deck_quiz'),
+
+    url(r'^tag/(?P<tag_word>.+)/$', views.tag_deck_list, name='tag_deck_list'),
 
     #this... probably shouldn't be in a release 
     url(r'^flush/$', views.flush_session, name='flush_session'),

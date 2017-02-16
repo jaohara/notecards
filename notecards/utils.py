@@ -12,6 +12,12 @@ def make_elipsis(name_string):
     else:
         return ""
 
+def mail_count_check(request, selected_user):
+    if selected_user == request.user:
+        return models.Message.objects.filter(recipient=request.user.pk).order_by("-message_date").filter(message_read=False).count()
+    else: 
+        return 0
+
 
 # these "reset_session_" methods are pretty straightforward; they delete
 # a particular session variable if present to make sure they don't exist

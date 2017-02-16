@@ -4,14 +4,14 @@
 
 {% block user_content%}
 
-    <p>Decks created: {{decks|length}}</p>
+    <h1>Profile Overview</h1>
 
-    <ul>
-        {% for deck in decks %}
-        <li><a href="{% url 'deck_view' pk=deck.pk%}">{{deck.title}}</a></li>
-        {% empty %}
-        <li>No decks to display</li>
-        {% endfor %}
-    </ul>
+    <h2>Bio</h2>
+
+    <p>This is some placeholder text. In the future, there will be a more fleshed out thing here that will allow users to fill in some personal information. This will be displayed here.</p>
+
+    <h2>Tags of Interest</h2>
+
+    <p><span class="deck-tag">Computers</span><span class="deck-tag">Baseball</span><span class="deck-tag">Video Games</span><span class="deck-tag">Language</span></p>
 
 {% endblock %}

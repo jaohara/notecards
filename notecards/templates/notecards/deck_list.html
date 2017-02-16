@@ -1,7 +1,9 @@
 {% extends 'notecards/base.html' %}
 
 {% block content %}
-    {% if deck_query == None %}
+    {% if tag %}
+    <h1>Decks tagged with '{{tag.word}}'</h1>
+    {% elif deck_query == None %}
     <h1>All Decks</h1>
     {% else %}
     <h1>Search results for "{{deck_query}}":</h1>
@@ -100,7 +102,7 @@
     </table>
     {% endif %}
 
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and deck_query == None and tag == None %}
     <h2>Create a Deck</h2>
     <form method="POST" class="deck-form" action="{% url 'create_deck'%}">
         {% csrf_token %}

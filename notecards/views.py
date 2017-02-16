@@ -12,9 +12,9 @@ from django.utils import timezone
 
 from django.contrib.auth.models import User
 from .models import Card, Deck, Message, QuizResult, Tag, UserProfile
-from .forms import CardForm, DeckForm, DeckEditForm, UserForm, MessageForm
+from .forms import CardForm, DeckForm, DeckEditForm, MessageForm, UserForm, TagForm
 
-from .utils import reset_session_cards, reset_session_quiz, make_elipsis, save_quiz_results
+from .utils import reset_session_cards, reset_session_quiz, make_elipsis, save_quiz_results, mail_count_check
 
 
 # This might belong in a differen views.py, but it's here for now.
@@ -65,9 +65,21 @@ def deck_list(request, sort_method="created_date", sort_order="ascending", deck_
     form = DeckForm()
     return render(request, 'notecards/deck_list.html', {'decks': decks,
                                                         'deck_query': deck_query, 
-                                                        'form': form,
+                                                        'form': form,       # REMOVED IN SEARCH CASES?
                                                         'sort_method': sort_method,
                                                         'sort_order': sort_order,})
+
+def tag_deck_list(request, tag_word):
+    tag = get_object_or_404(Tag, word=tag_word)
+
+    decks = tag.deck_set.all()
+
+    # This will soon be removed, as this shouldn't be on every search result page.
+    form = DeckForm()
+
+    return render(request, 'notecards/deck_list.html', {'decks': decks,
+                                                        'form': form,       # TO BE REMOVED
+                                                        'tag': tag,})
 
 def deck_view(request, pk):
     
@@ -90,17 +102,16 @@ def deck_view(request, pk):
     reset_session_cards(request)
     deck = get_object_or_404(Deck, pk=pk)
     cards = Card.objects.filter(deck__pk=deck.pk)
-    form = CardForm()
+    card_form = CardForm()
+    tag_form = TagForm()
 
-    
 
-    # return to this later, not necessary for first draft
-    # tags = Tag.objects.filter()
     return render(request, 'notecards/deck_view.html', {'cards': cards,
+                                                        'card_form': card_form,
                                                         'deck': deck,
                                                         'feedback_type': feedback_type, 
-                                                        'form': form,
-                                                        'quiz_results': quiz_results,})
+                                                        'quiz_results': quiz_results,
+                                                        'tag_form': tag_form,})
 
 @login_required
 def deck_review(request, pk, card_index=0):
@@ -385,14 +396,54 @@ def add_card_to_deck(request, pk):
     if request.method == "POST":
         deck = get_object_or_404(Deck, pk=pk)
         form = CardForm(request.POST)
-        if form.is_valid():
-            card = form.save(commit=False)
-            card.deck = deck
-            card.save()
-            deck.add_card()
-            return redirect('deck_view', pk=deck.pk)
+        if request.user == deck.author:
+            if form.is_valid():
+                card = form.save(commit=False)
+                card.deck = deck
+                card.save()
+                deck.add_card()
+                return redirect('deck_view', pk=deck.pk)
+        else:
+            redirect('/')
     else:
         redirect('/')
+
+@login_required
+def add_tag_to_deck(request, pk):
+    if request.method == "POST":
+        deck = get_object_or_404(Deck, pk=pk)
+        form = TagForm(request.POST)
+        if request.user == deck.author:
+            if form.is_valid():
+                tag = form.save(commit=False)
+                if Tag.objects.filter(word=form.cleaned_data['word']).count() == 0:
+                    # create tag object
+                    tag.save()
+
+                tag = Tag.objects.get(word=form.cleaned_data['word'])
+                # add tag to deck
+                deck.add_tag(tag)
+                deck.save()
+
+                return redirect('deck_view', pk=deck.pk)
+        else:
+            return redirect('/')
+
+    else:
+        return redirect('/')
+
+@login_required
+def remove_tag_from_deck(request, pk, tag_word):
+    deck = get_object_or_404(Deck, pk=pk)
+    tag = get_object_or_404(Tag, word=tag_word)
+
+    if request.user == deck.author:
+        deck.remove_tag(tag)
+        deck.save()
+        return redirect('deck_view', pk=deck.pk)
+
+    else:
+        return redirect('/')
 
 @login_required
 def edit_card(request, deck_pk, card_pk):
@@ -430,6 +481,13 @@ def remove_card_from_deck(request, pk):
     return redirect('deck_view', pk=deck.pk)
 
 
+"""
+
+    USER CREATION VIEWS
+
+"""
+
+
 def create_user(request):
     if request.method == "POST":
         # here's where we handle the submitted data
@@ -446,6 +504,28 @@ def create_user(request):
     return render(request, 'registration/create_user.html', {'form': form,})
 
 
+"""
+
+
+    USER PROFILE VIEWS
+
+
+"""
+
+# I don't know if you need to be logged in for any of this, but it would
+# probably be the difference between viewing a profile and editing your own
+@login_required
+def user_profile(request, pk):
+
+    selected_user = get_object_or_404(User, pk=pk)
+    decks = Deck.objects.filter(author=selected_user.pk)
+
+    mail_count = mail_count_check(request, selected_user)
+
+    return render(request, 'user_profiles/user_profile.html', {'decks': decks,
+                                                               'mail_count': mail_count,
+                                                               'selected_user': selected_user,})
+
 
 @login_required
 def user_messages(request, feedback_type=None, feedback_text=None):
@@ -455,41 +535,44 @@ def user_messages(request, feedback_type=None, feedback_text=None):
     inbox = Message.objects.filter(recipient=request.user.pk).order_by("-message_date")
     outbox = Message.objects.filter(sender=request.user.pk)
 
+    mail_count = mail_count_check(request, request.user)
+
     return render(request, 'user_profiles/user_messages.html', {'inbox': inbox,
+                                                                'mail_count': mail_count,
                                                                 'outbox': outbox,
                                                                 'selected_user': request.user})
+
 
 @login_required
 def user_write_message(request, recipient_pk=None):
     if request.method == "POST":
         message_form = MessageForm(request.POST)
         if message_form.is_valid():
-            new_message = Message(sender=request.user,
-                                  recipient=message_form.cleaned_data.get('recipient'),
-                                  subject=message_form.cleaned_data.get('subject'),
-                                  message_body= message_form.cleaned_data.get('message_body'))
-            new_message.save()
-            feedback_text = "Message to {} sent successfully.".format(message_form.cleaned_data.get('recipient'))
-            """
-            return render(request, 'user_profiles/user_messages.html', {'feedback_type': 'positive',
-                                                                        'feedback_text': feedback_text,
-                                                                        'selected_user': request.user})
-            """
-            return user_messages(request, 'positive', feedback_text)
+
+            # Is it worth preventing messages to yourself? Reddit allows it. It's useless but harmless.
+            feedback_type = 'negative'
+            feedback_text = 'You cannot send a message to yourself.'
+            if request.user != message_form.cleaned_data.get('recipient'):
+                new_message = Message(sender=request.user,
+                                      recipient=message_form.cleaned_data.get('recipient'),
+                                      subject=message_form.cleaned_data.get('subject'),
+                                      message_body= message_form.cleaned_data.get('message_body'))
+
+
+                new_message.save()
+                feedback_type = 'positive'
+                feedback_text = "Message to {} sent successfully.".format(message_form.cleaned_data.get('recipient'))
+                """
+                return render(request, 'user_profiles/user_messages.html', {'feedback_type': 'positive',
+                                                                            'feedback_text': feedback_text,
+                                                                            'selected_user': request.user})
+                """
+            return user_messages(request, feedback_type, feedback_text)
     
     message_form = MessageForm(initial={'recipient': recipient_pk})
 
     return render(request, 'user_profiles/user_write_message.html', {'message_form': message_form})
 
-# I don't know if you need to be logged in for any of this, but it would
-# probably be the difference between viewing a profile and editing your own
-@login_required
-def user_profile(request, pk):
-    selected_user = get_object_or_404(User, pk=pk)
-    decks = Deck.objects.filter(author=selected_user.pk)
-
-    return render(request, 'user_profiles/user_profile.html', {'decks': decks,
-                                                               'selected_user': selected_user,})
 
 @login_required
 def user_settings(request, pk):
@@ -503,8 +586,12 @@ def user_settings(request, pk):
 
     password_form = PasswordChangeForm(request.user)
 
-    return render(request, 'user_profiles/user_settings.html', {'password_form': password_form,
+    mail_count = mail_count_check(request, selected_user)
+
+    return render(request, 'user_profiles/user_settings.html', {'mail_count': mail_count,
+                                                                'password_form': password_form,
                                                                 'selected_user': selected_user,})
+
 
 @login_required
 def user_stats(request, pk):
@@ -539,7 +626,10 @@ def user_stats(request, pk):
     else:
         question_correct_percentage = '0.00'
 
-    return render(request, 'user_profiles/user_stats.html', {'question_correct_percentage': question_correct_percentage,
+    mail_count = mail_count_check(request, selected_user)
+
+    return render(request, 'user_profiles/user_stats.html', {'mail_count': mail_count,
+                                                             'question_correct_percentage': question_correct_percentage,
                                                              'questions_attempted': total_questions_attempted,
                                                              'questions_correct': total_questions_correct,
                                                              'quiz_completion_rate': quiz_completion_rate,
@@ -553,9 +643,33 @@ def user_stats(request, pk):
 
 
 @login_required
-def user_decks(request, pk):
-    # placeholder
-    return redirect('/')
+def user_decks(request, pk, sort_method="created_date", sort_order="ascending"):
+    #decks = Deck.objects.filter(author=selected_user.pk)
+
+    accepted_methods = ["created_date", "title", "card_count"]
+
+    order_switch = ""
+
+    if sort_order == "descending":
+        order_switch = "-"
+
+    if sort_method not in accepted_methods:
+        sort_method = "created_date"
+
+    save_quiz_results(request)
+    reset_session_cards(request)
+    
+    selected_user = get_object_or_404(User, pk=pk)
+    decks = Deck.objects.order_by("{}{}".format(order_switch,sort_method)).filter(author=selected_user.pk)
+
+    mail_count = mail_count_check(request, selected_user)
+
+    return render(request, 'user_profiles/user_decks.html', {'decks': decks,
+                                                             'mail_count': mail_count,
+                                                             'selected_user': selected_user,
+                                                             'sort_method': sort_method,
+                                                             'sort_order': sort_order,})
+
 
 # this shares a little more than I'd like with deck_list
 @login_required
