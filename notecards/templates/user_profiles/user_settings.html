@@ -2,14 +2,19 @@
 
 {% block user_content %}
 
-    <h2>Change Password</h2>
-    <form method="POST" >
-        {% csrf_token %}
+    <h1>User Settings</h1>
 
-        {{password_form.as_p}} 
-        <input type="submit" value="Change Password" />
-    </form>
+    <div class="form-wrapper edit-settings">
+        <h2>Change Password</h2>
+        <form method="POST" >
+            {% csrf_token %}
 
-    <h2>Change Email</h2>
+            {{password_form.as_p}} 
+            <input type="submit" value="Change Password" />
+        </form>
+
+        <h2>Change Email</h2>
+
+    </div>
 
 {% endblock %}

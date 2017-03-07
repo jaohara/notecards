@@ -106,7 +106,9 @@
     <h2>Create a Deck</h2>
     <form method="POST" class="deck-form" action="{% url 'create_deck'%}">
         {% csrf_token %}
-        {{ form }}
+        <div id="card-wrapper">
+            {{ form }}
+        </div>
         <button type="submit" class="save btn btn-default">Create</button>
     </form>
     {% endif %}

@@ -4,7 +4,14 @@
 {% block user_content %}
 
     <h1>Decks</h1>
-    <p>{{selected_user.username}} has created {{decks|length}} notecard deck{{decks|pluralize}}.
+    <p>
+    {% if request.user == selected_user %}
+    You have 
+    {% else %}
+    {{selected_user.username}} has
+    {% endif %} 
+
+    created {{decks|length}} notecard deck{{decks|pluralize}}.
 
     {% if decks %}
 

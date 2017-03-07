@@ -12,6 +12,18 @@
     color palette idea: base around rgb(6,133,255);
 
     rgb(28,37,46)?
+
+
+
+    NEW COLOR PALETTE:
+
+    hex: 509ae6;
+    base color (blue): rgb(12,130,230);
+    light variant: rgb(118, 177, 238)
+    lightest: rgb(166, 207, 246);
+
+    dark variant: rgb(46, 131, 219);
+    darkest: rgb(13, 106, 203);
 ------------------------------------------------------ */
 
 * {
@@ -39,9 +51,10 @@ body {
 ------------------------------------------------------ */
 
 .page-header{
-    background: rgb(28,37,46);
-    border: 0 0 1px 0 #fff;
-    box-shadow: 0px 1px 4px rgba(0,0,0,0.4);
+    /*background: rgb(28,37,46);*/
+    /*border: 0 0 1px 0 #fff;
+    box-shadow: 0px 1px 4px rgba(0,0,0,0.4);*/
+    background: rgb(12,130,230);
     color: #fff;
     margin: 0px;
     min-height: 74px;
@@ -50,15 +63,29 @@ body {
 
 .page-header h1 a{
     color: #fff;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Bevan', sans-serif;
     font-size: 1.4em;
-    font-weight: 500;
+    font-weight: 400;
+    letter-spacing: 2px;
+    padding: none;
     text-decoration: none;
+    text-shadow: 0px 1px 4px rgba(0,0,0,0.4);
+}
+
+.page-header h1 a span.title-n{
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0px 1px 4px rgba(0,0,0,0.4);
+    color: rgb(12,130,230);
+    font-family: 'Bevan', sans-serif;
+    text-shadow: none;
+    padding: 0em .4em;
 }
 
 .page-header h1{
     display: inline-block;
-    margin: 15px 0px;
+    margin: 0px;
+    padding: 15px;
     width: 20%;
 }
 
@@ -98,20 +125,25 @@ div.menu a.logged-out{
 ul.user-menu{
     /*background: rgba(255,255,255,0.4);*/
     /*background: rgba(25,65,104,1.0);*/
-    background: #333;
-    border: 0px 1px solid rgba(0,0,0,0);
+    background: #efefef;
+    border: 1px solid rgba(187, 187, 187, .75);
     border-bottom-right-radius: 2px;
     border-bottom-left-radius: 2px;
-    box-shadow: 0px 3px 8px rgba(0,0,0,0.4);
-    color: #fff;
+    box-shadow: 0px 3px 5px rgba(0,0,0,0.2);
+}
+
+ul.user-menu a{
+    color: rgb(13, 106, 203);
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
 }
 
 div.menu:hover, div.quiz-score{
-    background: rgba(19,25,31,1.0);
+    background: rgb(13, 106, 203);
     box-shadow: inset 0px 1px 8px rgba(0,0,0,0.3);
     border: 0px solid rgba(0,0,0,0.6);
     border-left: 1px;
     border-right: 1px;
+    color: #fff;
 }
 
 div.menu:hover .user-menu{
@@ -162,7 +194,7 @@ div.menu-search-bar span.glyphicon{
 ul.user-menu{
     display: none;
     list-style-type: none;
-    margin-top: 4px;
+    margin-top: 5px;
     min-width: 160px;
     position: absolute;
     right: 0px;
@@ -179,8 +211,9 @@ ul.user-menu li.user-menu-item a{
 }
 
 ul.user-menu li.user-menu-item a:hover{
-    background: #555;
+    background: rgb(13, 106, 203);
     box-shadow: inset 0px 1px 8px rgba(0,0,0,0.3);
+    color: #fff;
 }
 
 
@@ -189,20 +222,36 @@ ul.user-menu li.user-menu-item a:hover{
 ------------------------------------------------------ */
 
 .btn {
-    font-size: 1.1em;
+    font-size: 1.2em;
 }
+/*
+    base color (blue): rgb(12,130,230);
+    light variant: rgb(118, 177, 238)
+    lightest: rgb(166, 207, 246);
 
+    dark variant: rgb(46, 131, 219);
+    darkest: rgb(13, 106, 203);
+*/
 .btn-default{
-    background: rgb(28,37,46);
+    background: rgb(13, 106, 203);
     color: #fff;
-    text-shadow: 0px 0px 0px rgb(255,255,255);
-    transition: box-shadow .2s;
+    padding: .8em;
+    text-shadow: 0px 0px 2px rgba(0,0,0,0.0);
+    transition: background .2s;
 }
 
 .btn-default:hover{
-    background: rgb(28,37,46);
-    box-shadow: 0px 4px 8px rgba(0,0,0,0.3); 
+    background: rgb(12,130,230);
     color: #fff;
+}
+
+.btn-default:active{
+    background: rgb(118, 177, 238);
+}
+
+.btn-default:focus{
+    color: #fff;
+    background: rgb(46, 131, 219);
 }
 
 /* ------------------------------------------------------
@@ -210,7 +259,7 @@ ul.user-menu li.user-menu-item a:hover{
 ------------------------------------------------------ */
 
 
-div.deck-meta-top-pane{ display: flex; }
+div.deck-meta-top-pane, div.card-meta-top-pane { display: flex; }
 
 div.deck-meta, div.card-meta{
     min-height: 64px;
@@ -330,7 +379,7 @@ div.feedback-neutral{
     box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
     font-size: 2.0em;
     height: 8.0em;
-    margin: 2%;
+    /*margin: 2%;*/
     width: 45%;
     text-align: center;
 }
@@ -340,8 +389,13 @@ div.feedback-neutral{
 }
 
 .card-form {
-    width: 90%;
     margin: 1.0em auto;
+    width: 90%;
+}
+
+.card-form #card-wrapper{
+    align-items: space-around;
+    display: flex;
 }
 
 .card-form button{
@@ -367,8 +421,7 @@ div.feedback-neutral{
     width: 80%;
 }
 
-.deck-form button.save{
-    background: rgb(28,37,46);
+.deck-form button.save, div.message form input.message-submit{
     color: #fff;
     width: 10%;
     margin: 0 2%;
@@ -395,6 +448,10 @@ div.feedback-neutral{
 /* ------------------------------------------------------
     Tags
 ------------------------------------------------------ */
+
+p.deck-tags{
+    line-height: 2.0em;
+}
 
 span.deck-tag, .tag-form input{
     background: rgba(179, 212, 251, 0.5);
@@ -429,21 +486,25 @@ span.deck-tag a span.glyphicon.glyphicon-remove:hover{
 ------------------------------------------------------ */
 
 div.footer{
-    background: #333;
+    /*background: #333;
     bottom: 0;
     box-shadow: inset 0px 1px 12px rgba(0,0,0,0.8);
-    color: #fff;
-    font-weight: bold;
-    margin: 15px 0px 0px 0px;
+    color: #fff;*/
+    margin: 15px auto;
     min-height: 80px;
     padding: 2.0em;
     position: relative;
-    width: 100%;
+    width: 60%;
     z-index: 150;
 }
 
+div.footer *{
+    font-weight: 400;
+    color: #333;
+}
+
 div.footer a{
-    color: #eee;
+    color: #333;
 }
 
 div.footer-left{
@@ -459,7 +520,7 @@ div.footer-right{
 ------------------------------------------------------ */
 
 .glyphicon{
-    color: #004B6B;;
+    color: rgb(12,130,230);
 }
 
 /* ------------------------------------------------------
@@ -479,7 +540,8 @@ h1, h2, h3, h4, h5 {
 ------------------------------------------------------ */
 
 a{
-    color: rgba(0,75,107,1.0);
+    /*color: rgba(0,75,107,1.0);*/
+    color: rgb(12,130,230);
     text-decoration: underline;
 }
 
@@ -494,19 +556,20 @@ a .glyphicon-remove{
 ------------------------------------------------------ */
 
 table.deck-table, table.user_table{
+    background: rgba(243, 243, 243, 1.0);
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
     font-size: 1.2em;
     margin: 1.0em 0em;
     width: 100%;
 }
 
-.deck-table tr.deck-table-row, .user_table tr.user-table-row{
-    transition: background .1s;
+table.deck-table th, table.deck-table td{
+    border: 1px solid rgba(187, 187, 187, .75);
 }
-
 
 .deck-table tr.deck-table-row:hover, .user-table tr.user-table-row:hover{
     /*background-color: rgba(255,223,165,.4);*/
-    background: rgba(179, 212, 251, 0.5);;
+    background: rgba(179, 212, 251, 0.5);
 }
 
 .deck-table-header th, .user-table-header th{
@@ -519,7 +582,11 @@ table.deck-table, table.user_table{
 }
 
 .deck-table-header th:hover, .user-table-header th:hover{
-    background-color: #ddd;
+    background-color: rgb(13, 106, 203);
+    color: #fff;
+
+    /*rgb(118, 177, 238);*/
+
 }
 
 .deck-table-header th:hover span.glyphicon, .user-table-header th:hover span.glyphicon{
@@ -532,9 +599,19 @@ table.deck-table, table.user_table{
     text-decoration: none;
 }
 
+/*
+    base color (blue): rgb(12,130,230);
+    light variant: rgb(118, 177, 238)
+    lightest: rgb(166, 207, 246);
+
+    dark variant: rgb(46, 131, 219);
+    darkest: rgb(13, 106, 203);
+*/
 
 .deck-table tr:first-child, .user-table tr:first-child{
-    background-color: #eee;
+    background-color: #dedede;
+    /*color: rgb(13, 106, 203);*/
+    /*rgb(166, 207, 246);*/
 }
 
 .deck-table tr, .deck-table td, .user-table tr, .user-table td{
@@ -578,6 +655,23 @@ table.deck-table td span.glyphicon, table.user-table td span.glyphicon{
     font-size: 0.8em;
 }
 
+/*
+ trying to round the corners
+*/
+
+table.deck-table tr.deck-table-header th:first-child {
+    border-radius: 4px 0 0 0;
+}
+table.deck-table tr.deck-table-header th:last-child {
+    border-radius: 0 4px 0 0;
+}
+table.deck-table tr:last-child td:first-child {
+    border-radius: 0 0 0 4px;
+}
+table.deck-table tr:last-child td:last-child {
+    border-radius: 0 0 4px 0;
+}
+
 /* ------------------------------------------------------
     Deck Warning
 ------------------------------------------------------ */
@@ -614,12 +708,12 @@ div.deck-warning{
 }
 
 .card-front, .card-back{
-    text-align: center;
+    background-color: rgba(0,0,0,0.03);
     border: 1px solid #bbb;
     font-size: 1.6em;
     padding: 2.6em 1.0em;
     width: 11em;
-    background-color: rgba(0,0,0,0.03);
+    text-align: center;
 }
 
 div.card-wrapper{
@@ -628,7 +722,7 @@ div.card-wrapper{
     transition: background .2s;
 }
 
-div.card-wrapper:hover, div.deck-meta div.deck-controls a:hover{
+div.card-wrapper:hover, div.deck-meta div.deck-controls a:hover, .message.new{
     background: rgba(255,223,165,.2);
     border: 1px solid rgba(240, 163, 28, .6);
 }
@@ -645,9 +739,7 @@ a.card-edit-link{
     Login Page & Deck Edit Forms 
 ------------------------------------------------------ */
 
-div.login-wrapper, div.deck-edit-wrapper, div.http-error-wrapper{
-    border: 1px solid #bbb;
-    box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
+div.form-wrapper, div.deck-edit-wrapper, div.http-error-wrapper, div.login-wrapper{
     margin: 2.0em auto;
     padding: 2.0em;
     width: 45%;
@@ -658,14 +750,14 @@ div.deck-edit-wrapper{
 }
 
 
-div.login-wrapper form{
+div.form-wrapper.login form{
     width: 100%;
 }
 
-.login-wrapper input#id_username, .login-wrapper input#id_password, .login-wrapper input#id_email,
+.form-wrapper input#id_username, .form-wrapper input#id_password, .form-wrapper input#id_email,
 .deck-edit-wrapper input#id_title, div.deck-edit-wrapper textarea#id_description{
     border: 1px solid #bbb;
-    border-radius: 5px;
+    border-radius: 4px;
     font-size: 1.2em;
     margin-left: 1.0em;
     min-height: 50px;
@@ -673,7 +765,11 @@ div.login-wrapper form{
     width: 90%;
 }
 
-div.login-wrapper input.login-submit, div.deck-edit-wrapper input.edit-submit{
+textarea{
+    border-radius: 4px;
+}
+/*
+div.form-wrapper input.login-submit, div.deck-edit-wrapper input.edit-submit{
     background: rgb(28,37,46);
     color: #fff;
     margin-left: 1.9em;
@@ -681,6 +777,7 @@ div.login-wrapper input.login-submit, div.deck-edit-wrapper input.edit-submit{
     padding: .8em;
     width: 66%; 
 }
+*/
 
 
 /* ------------------------------------------------------
@@ -710,8 +807,8 @@ ul.temp-quiz-list li{
 }
 
 ul.temp-quiz-list li a{
-    border: 1px solid #bbb;
-    box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
+/*    border: 1px solid #bbb;
+    box-shadow: 0px 6px 10px rgba(0,0,0,0.2);*/
     display: block;
     font-size: 1.2em;
     padding: 1.0em;
@@ -732,15 +829,21 @@ div.review-content{
     margin: 3em 0;
 }
 
+/* shared rule with .message.... and now every other form element. */
+
+div.front, div.back, div.message, ul.temp-quiz-list li a, div.user-stats-panel, div.form-wrapper{
+    background: rgba(243, 243, 243, 1.0);
+    border: 1px solid rgba(187, 187, 187, .75);
+    border-radius: 4px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
+
 div.front, div.back{
     /*
     background: rgba(0,0,0,0.05);
     
     The above evaluates down to the below:;
     */
-    background: rgba(243, 243, 243, 1.0);
-    border: 1px solid #bbb;
-    box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
     float: left;
     font-size: 1.6em;
     margin: 2% 5%;
@@ -831,28 +934,6 @@ div.error-content h1{
     User Profile
 ------------------------------------------------------ */
 
-
-
-
-
-
-
-
-
-
-
-
-/* --------------------------
-    RESUME
-            WORKING
-                        HERE!
-
-    -------------------------- */
-
-
-
-
-
 div.user-profile-wrapper{
     align-items: flex-start;
     display: flex;
@@ -908,7 +989,7 @@ div.user-profile-wrapper img.user-icon {
     border-radius: 50%;
 }
 
-ul.user-profile-info-nav li a span.mail-count{ 
+ul.user-profile-info-nav li a span.mail-count.new{ 
     background-color: rgb(250, 54, 68);
     border-radius: 10px;
     box-shadow: 1px 1px 0px rgba(0,0,0,0.2);
@@ -916,9 +997,119 @@ ul.user-profile-info-nav li a span.mail-count{
     color: #fff; 
 }
 
+div.user-profile-content{
+    /*
+        THIS IS HARDCODED, THIS NEEDS TO CHANGE ONCE I FIGURE OUT HOW TO WORK WITH MEDIA QUERIES. 
+    */
+    width: 855px;
+}
 
 /* Profile glyphicons */
 ul.user-profile-info-nav li a span.glyphicon.glyphicon-th-list{ color:rgb(255, 150, 147); }
 ul.user-profile-info-nav li a span.glyphicon.glyphicon-stats{ color: rgb(124, 215, 130); }
+ul.user-profile-info-nav li a span.glyphicon.glyphicon-inbox,
 ul.user-profile-info-nav li a span.glyphicon.glyphicon-envelope{ color: rgb(219, 126, 177); }
 ul.user-profile-info-nav li a span.glyphicon.glyphicon-cog{ color: rgb(113, 113, 113); }
+
+
+
+/* ------------------------------------------------------
+    User Profile - Messages
+------------------------------------------------------ */
+
+.message {
+    font-size: 1.1em;
+    margin-bottom: 1.0em;
+    padding: 1.0em;
+    width: 100%;
+}
+
+.message-meta {
+    font-size: 0.9em;
+    opacity: 0.9;
+    margin-bottom: .8em;
+}
+
+.message-controls{
+    position: absolute;
+    right: 3.0em;
+}
+
+.message-controls a{
+    text-decoration: none
+}
+
+a.message-compose{
+    display: block;
+    font-size: 1.4em;
+    padding: 0.5em;
+    position: absolute;
+    right: 1.0em;
+    top: 2.4em;
+    text-decoration: none;
+}
+
+span.message-subject{
+    font-size: 1.4em;
+    font-weight: bold;
+}
+
+div.message form label{
+    margin-right: 2%;
+    text-align: right;
+    width: 15%;
+}
+
+div.message form input, div.message form textarea{
+    border: 1px solid #bbb;
+    border-radius: 4px;
+    font-size: 1.2em;
+    padding: .5em;
+    width: 78%;
+}
+
+div.message form input.message-submit{
+    border: 0px;
+    border-radius: 4px;
+    margin-left: 85.5%;
+}
+
+/* ------------------------------------------------------
+    User Profile - Stats
+------------------------------------------------------ */
+
+ul.user-stats-list{
+    display: none;
+
+}
+
+.user-stats-wrapper{
+    align-content: space-around;
+    display: flex;
+    flex-wrap: wrap;
+    height: 500px;
+    justify-content: space-around;
+}
+
+/* THESE COLORS NEED WORK */
+
+.user-stats-panel{/*
+    background: rgb(124, 215, 130);
+    border: 1px solid rgba(58, 100, 60,0.4);
+    border-radius: 4px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);*/
+    font-weight: bold;
+    font-size: 2.0em;
+    padding: 1.2em 0;
+    width: 30%;
+    text-align: center;
+}
+
+
+/* ------------------------------------------------------
+    User Profile - Edit Settings
+------------------------------------------------------ */
+
+div.edit-settings {
+    width: 100%;
+}

@@ -67,8 +67,12 @@
                     {% for tag in deck.tags.all %}
                         <span class="deck-tag">
                             <a href="{% url 'tag_deck_list' tag_word=tag.word %}">{{tag.word}}</a>
-                            <a href="{% url 'remove_tag_from_deck' pk=deck.pk tag_word=tag.word%}">
-                            <span class="glyphicon glyphicon-remove"></span></a>
+                            
+                            {% if user == deck.author %}
+                                <a href="{% url 'remove_tag_from_deck' pk=deck.pk tag_word=tag.word%}">
+                                <span class="glyphicon glyphicon-remove"></span></a>
+                            {% endif %}
+
                         </span>
                     {% endfor %}
                 {% else %}

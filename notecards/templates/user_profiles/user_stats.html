@@ -6,7 +6,53 @@
 
     <h1>User Statistics</h1>
 
-    <h2>Overall Quiz Stats</h2>
+    <div class="user-stats-wrapper">
+
+        <div class="user-stats-panel">
+            <h3>Questions</h3>
+            <p>{{question_correct_percentage}}%</p>
+            <p>{{questions_correct}} / {{questions_attempted}}</p>
+
+        </div>
+
+        <div class="user-stats-panel">
+            <h3>Quiz Completion</h3>
+            <p>{{quiz_completion_rate}}%</p>
+            <p>{{quizzes_completed}} / {{quizzes_attempted}}</p>
+
+
+        </div>
+        
+        <div class="user-stats-panel">
+            <h3>Questions</h3>
+            <p>{{question_correct_percentage}}%</p>
+            <p>{{questions_correct}} / {{questions_attempted}}</p>
+
+        </div>
+
+        <div class="user-stats-panel">
+            <h3>Quiz Completion</h3>
+            <p>{{quiz_completion_rate}}%</p>
+            <p>{{quizzes_completed}} / {{quizzes_attempted}}</p>
+            
+
+        </div>
+
+        <div class="user-stats-panel">
+            <h3>Questions</h3>
+            <p>{{question_correct_percentage}}%</p>
+            <p>{{questions_correct}} / {{questions_attempted}}</p>
+
+        </div>
+
+        <div class="user-stats-panel">
+            <h3>Quiz Completion</h3>
+            <p>{{quiz_completion_rate}}%</p>
+            <p>{{quizzes_completed}} / {{quizzes_attempted}}</p>
+            
+
+        </div>
+
     <ul class="user-stats-list">
         <li><strong>Quizzes Attempted:</strong> {{quizzes_attempted}}</li>
         <li><strong>Quizzes Completed:</strong> {{quizzes_completed}}</li>
@@ -14,12 +60,13 @@
         <li><strong>Total Time Spent in Quizzes:</strong> {{quiz_duration_minutes}}:{{quiz_duration_seconds}}</li>
     </ul>
 
-    <h2>Overall Question Stats</h2>
-    <ul>
+    <ul class="user-stats-list">
         <li><strong>Questions Attempted:</strong> {{questions_attempted}}</li>
         <li><strong>Questions Correct:</strong> {{questions_correct}}</li>
         <li><strong>Aggregate Question Score:</strong> {{question_correct_percentage}}%</li>
     </ul>
+
+    </div>
 
 {% endblock %}
 

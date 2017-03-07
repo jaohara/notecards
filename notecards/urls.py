@@ -17,6 +17,7 @@ urlpatterns =[
     url(r'^accounts/messages/$', views.user_messages, name='user_messages'),
     url(r'^accounts/messages/create/$', views.user_write_message, name='user_write_message'),
     url(r'^accounts/messages/create/(?P<recipient_pk>\d+)/$', views.user_write_message, name='user_write_message'),
+    url(r'^accounts/messages/delete/(?P<message_pk>\d+)/$', views.user_delete_message, name='user_delete_message'),
     url(r'^accounts/(?P<pk>\d+)/settings/$', views.user_settings, name='user_settings'),
     url(r'^accounts/(?P<pk>\d+)/stats/$', views.user_stats, name='user_stats'),
     url(r'^accounts/(?P<pk>\d+)/decks/$', views.user_decks, name='user_decks'),

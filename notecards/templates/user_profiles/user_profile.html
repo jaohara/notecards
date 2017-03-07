@@ -12,6 +12,24 @@
 
     <h2>Tags of Interest</h2>
 
-    <p><span class="deck-tag">Computers</span><span class="deck-tag">Baseball</span><span class="deck-tag">Video Games</span><span class="deck-tag">Language</span></p>
+    <p class="deck-tags">
+    {% for tag in favorite_tags %}
+
+        <span class="deck-tag">
+            <a href="{% url 'tag_deck_list' tag_word=tag.word %}">{{tag.word}}</a>
+        </span>
+
+    {% empty %}
+
+        {% if request.user == selected_user %}
+        You haven't
+        {% else %}
+        {{selected_user.username}} hasn't
+
+    {% endif%}
+
+    used any tags yet :(
+
+    {% endfor %}
 
 {% endblock %}

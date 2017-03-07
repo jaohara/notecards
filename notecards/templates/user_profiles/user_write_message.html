@@ -1,14 +1,16 @@
-{% extends 'notecards/base.html' %}
+{% extends "user_profiles/user_base.html" %}
 
-{% block content %}
+{% block user_content %}
 
-    <h2>Compose a new Message</h2>
+    <h1>New Message</h1>
 
-    <form method="POST">
-        {% csrf_token %}
+    <div class="message">
+        <form method="POST">
+            {% csrf_token %}
 
-        {{message_form.as_p}}
-        <input type="submit" value="Send Message" />
-    </form>
+            {{message_form.as_p}}
+            <input type="submit" value="Send" class="message-submit"/>
+        </form>
+    </div>
 
 {% endblock %}

@@ -39,6 +39,14 @@ class Deck(models.Model):
         self.tags.remove(tag)
         self.save()
 
+    def add_user(self, user):
+        self.permitted_users.add(user)
+        self.save()
+
+    def remove_user(self, user):
+        self.permitted_users.remove(user)
+        self.save()
+
     def log_modification(self):
         self.modified_date = timezone.now
         self.save()
@@ -60,20 +68,31 @@ class Card(models.Model):
 
 
 class UserProfile(models.Model):
-    # 1-4 for one of the prefab avatars. They are located in the static directory,
-    # named notecards-user-icon-x.png
-    avatar = models.PositiveIntegerField(default=1)
+
+    """
+        I think the best way to handle creating these is to have a method for creating
+        users through the UserProfile model, instead of creating UserProfiles at a later
+        date and binding them to the users.
+
+        So, when we create a user, we'd ignore the default functionality and create
+        one of these UserProfiles instead, and then there'd be some sort of 
+        constructor method or a method that view could call that'd create a
+        User with the supplied information and bind it to the 'user' field in its
+        instance.
+
+        Yeah. That sounds right.
+    """
+
+
+
+
     user = models.OneToOneField(User)
 
-    # these stats could probably be inferred by making a queryset of all a user's QuizResults
-    # I'm going to keep these here to remember the stats I want to grab, but they won't
-    # be handled in this model.
+    bio = models.TextField(max_length=500, blank=True, default="This user hasn't edited their bio yet!")
+    birth_date = models.DateTimeField(blank=True, null=True)
+    # location = 
 
-    #questions_attempted = models.PositiveIntegerField(default=0)
-    #questions_correct = models.PositiveIntegerField(default=0)
-
-    #quizzes_attempted = models.PositiveIntegerField(default=0)
-    #quizzes_completed = models.PositiveIntegerField(default=0)
+    saved_decks = models.ManyToManyField(Deck, blank=True)
 
     def __str__(self):
         return "UserProfile for '{}'".format(self.user.username)
@@ -84,12 +103,33 @@ class Message(models.Model):
     recipient = models.ForeignKey(User, related_name="recipient")
 
     subject = models.CharField(max_length=300)
-
     message_body = models.TextField(max_length=5000)
-
     message_date = models.DateTimeField(default=timezone.now)
-
     message_read = models.BooleanField(default=False)
+    message_is_new = models.BooleanField(default=True)
+
+    """
+        Okay, the last one there doesn't make much sense. I can't think of a good
+        name for it. 
+
+        I want to have new messages highlighted. The view will pull up the messages,
+        and mark the unread ones (message_read as False) as read (message_read as True).
+        These will be saved. Now, when we pass the queryset to the template, the 
+        message will be already marked as read, as it was modified in the view. So
+        new messages and old messages will look the same to the template.
+
+        The idea is to check if message_is_new is true at the same time we check 
+        if message_read is true. If both are true, we know that the message has 
+        been read before, so message_is_new will then be flipped to false. this
+        property is what determines which messages are highlighted in the template.
+
+        If message_read is false and message_is_new is True (default), we'll keep
+        message_is_new as is and flip message_read to True.
+
+        First time through, the message will be highlighted. Next time through, 
+        the view will flip message_is_new to False, so it won't be highlighted.
+    """
+
 
     def __str__(self):
         return "Message from {} to {} on {}".format(self.sender.username,

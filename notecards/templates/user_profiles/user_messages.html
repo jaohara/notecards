@@ -2,12 +2,44 @@
 
 {% block user_content %}
 
+    <a class="message-compose" href="{% url 'user_write_message'%}">
+        <span class="glyphicon glyphicon-pencil"></span>&nbsp;
+        Compose a Message
+    </a>
+
+    <h1>Inbox</h1>
     {% for message in inbox %}
 
-        <div>
-            <span><strong>{{message.subject}}</strong></span><br />
-            <span><strong>Sender:</strong> {{message.sender}}</span><br />
-            <span>Sent on <strong>{{message.message_date}}</strong></span>
+        {% if message.message_is_new == True %}
+        <div class="message new">
+        {% else %}
+        <div class="message">
+        {% endif %}
+
+            <div class="message-controls">
+                <a href="{% url 'user_write_message' recipient_pk=message.sender.pk%}">
+                    <span class="glyphicon glyphicon-share-alt"></span>&nbsp;Reply
+                </a>
+                <a href="{% url 'user_delete_message' message_pk=message.pk %}">
+                    <span class="glyphicon glyphicon-trash"></span>&nbsp;Delete
+                </a>
+            </div>
+            <span class="message-subject">{{message.subject}}</span><br />
+
+            <div class="message-meta">
+                From 
+
+                <span class="message-sender">
+                    <a href="{% url 'user_profile' pk=message.sender.pk %}">
+                        {{message.sender}}</a>
+                </span> 
+
+                on 
+
+                <span class="message-sender">
+                    {{message.message_date}}
+                </span> 
+            </div>
 
             <p>
                 {{message.message_body}}

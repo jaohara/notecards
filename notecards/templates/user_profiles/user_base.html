@@ -29,14 +29,20 @@
             {% else %}
             <li>
                 <a href="{% url 'user_messages' %}">
-                <span class="glyphicon glyphicon-envelope"></span>Inbox - 
-                <span class="mail-count">{{mail_count}}</span></a>
+                <span class="glyphicon glyphicon-inbox"></span>Inbox - 
+                {% if mail_count > 0 %}
+                <span class="mail-count new">
+                {% else %}
+                <span class="mail-count">
+                {% endif %}{{mail_count}}</span></a>
             </li>
             <li>
                 <a href=""><span class="glyphicon glyphicon-user"></span>Edit Profile</a>
             </li>
             <li>
-                <a href=""><span class="glyphicon glyphicon-cog"></span>Edit Settings</a>
+                <a href="{% url 'user_settings' pk=selected_user.pk %}">
+                    <span class="glyphicon glyphicon-cog"></span>Edit Settings
+                </a>
             </li>
             {% endif %}
         </ul>

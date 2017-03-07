@@ -3,7 +3,7 @@ import time
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.core import serializers
 from django.db.models.functions import Lower
 from django.shortcuts import render, get_object_or_404, redirect, render_to_response
@@ -364,7 +364,12 @@ def delete_deck(request, pk):
     if request.user == deck.author:
         deck.delete()
 
-    return redirect('/')
+
+    # this will probably be an  AJAX operation in the future, in the meantime redirect to the latest page
+
+    # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+    # return redirect('/')
+    return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
 def edit_deck(request, pk):
@@ -522,7 +527,18 @@ def user_profile(request, pk):
 
     mail_count = mail_count_check(request, selected_user)
 
-    return render(request, 'user_profiles/user_profile.html', {'decks': decks,
+    all_used_tags = dict()
+
+    for deck in decks:
+        for tag in deck.tags.all():
+            if tag not in all_used_tags:
+                all_used_tags[tag] = 1
+            else:
+                all_used_tags[tag] += 1
+
+    favorite_tags = sorted(all_used_tags, key=all_used_tags.get, reverse=True)
+
+    return render(request, 'user_profiles/user_profile.html', {'favorite_tags': favorite_tags[:10],
                                                                'mail_count': mail_count,
                                                                'selected_user': selected_user,})
 
@@ -536,6 +552,18 @@ def user_messages(request, feedback_type=None, feedback_text=None):
     outbox = Message.objects.filter(sender=request.user.pk)
 
     mail_count = mail_count_check(request, request.user)
+
+    for message in inbox:
+        message_changed = False
+        if message.message_read == False:
+            message.message_read = True
+            message_changed = True
+        elif message.message_read == True and message.message_is_new == True:
+            message.message_is_new = False
+            message_changed = True
+
+        if message_changed:
+            message.save()
 
     return render(request, 'user_profiles/user_messages.html', {'inbox': inbox,
                                                                 'mail_count': mail_count,
@@ -571,8 +599,22 @@ def user_write_message(request, recipient_pk=None):
     
     message_form = MessageForm(initial={'recipient': recipient_pk})
 
-    return render(request, 'user_profiles/user_write_message.html', {'message_form': message_form})
+    return render(request, 'user_profiles/user_write_message.html', {'mail_count': mail_count_check(request, request.user),
+                                                                     'message_form': message_form,
+                                                                     'selected_user': request.user})
 
+@login_required
+def user_delete_message(request, message_pk):
+    message = get_object_or_404(Message, pk=message_pk)
+
+    if request.user == message.recipient:
+        message.delete()
+        feedback_type = "neutral"
+        feedback_text = "Message deleted."
+        return user_messages(request, feedback_type, feedback_text)
+
+    else:
+        return redirect('/')
 
 @login_required
 def user_settings(request, pk):
