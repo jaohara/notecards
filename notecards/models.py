@@ -16,6 +16,8 @@ class Deck(models.Model):
     card_count = models.PositiveIntegerField(default=0)
     created_date = models.DateTimeField(default=timezone.now)
     description = models.TextField(blank=True, default="", max_length=800)
+    deck_hits = models.PositiveIntegerField(default=0)
+    deck_likes = models.ManyToManyField(User, blank=True, related_name="likers")
     modified_date = models.DateTimeField(default=timezone.now)
     tags = models.ManyToManyField(Tag, blank=True)
     title = models.CharField(max_length=200)
@@ -45,6 +47,17 @@ class Deck(models.Model):
 
     def remove_user(self, user):
         self.permitted_users.remove(user)
+        self.save()
+
+    def hit_deck(self):
+        self.deck_hits += 1
+        self.save()
+
+    def like(self, user):
+        if user in self.deck_likes.all():
+            self.deck_likes.remove(user)
+        else:
+            self.deck_likes.add(user)
         self.save()
 
     def log_modification(self):

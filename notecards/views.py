@@ -485,7 +485,18 @@ def remove_card_from_deck(request, pk):
     deck.remove_card()
     return redirect('deck_view', pk=deck.pk)
 
+@login_required
+def like_deck(request, pk):
+    """
+        This is an ajax-less test for something that will use Ajax in the future.
+        The functionality should be very similar, but obviously without the redirecting.
+    """
 
+    deck = get_object_or_404(Deck, pk=pk)
+    if request.user.is_authenticated():
+        deck.like(request.user)
+
+    return redirect('deck_view', pk=deck.pk)
 """
 
     USER CREATION VIEWS

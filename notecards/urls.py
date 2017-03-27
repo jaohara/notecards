@@ -45,6 +45,8 @@ urlpatterns =[
     url(r'^deck/(?P<deck_pk>\d+)/quiz/$', views.deck_quiz, name='deck_quiz'),
     url(r'^deck/(?P<deck_pk>\d+)/quiz/answer/(?P<answer_choice>\d+)', views.deck_quiz, name='deck_quiz'),
 
+    url(r'^deck/(?P<pk>\d+)/like/$', views.like_deck, name='like_deck'),
+
     url(r'^tag/(?P<tag_word>.+)/$', views.tag_deck_list, name='tag_deck_list'),
 
     #this... probably shouldn't be in a release 

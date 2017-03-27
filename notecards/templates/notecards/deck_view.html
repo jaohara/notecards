@@ -46,6 +46,7 @@
                 <span class="deck-quiz unclickable" tooltip="At least 4 cards are needed to make a Quiz.">Quiz</span>
             </a>
             {% endif %}
+
         </div>
         </div>
 
@@ -85,6 +86,14 @@
                 {% endif %}
         </p>
         </form>
+
+        <div class="deck-likes">
+            <a href="{% url 'like_deck' pk=deck.pk %}">
+                <span class="glyphicon glyphicon-star"></span>
+                <span class="deck-like-control">{{deck.deck_likes.count}}</span>
+            </a>
+        </div>
+
     </div>
     <div class="deck-wrapper">
 
