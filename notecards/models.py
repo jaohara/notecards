@@ -50,6 +50,8 @@ class Deck(models.Model):
         self.save()
 
     def hit_deck(self):
+        # this is some William Gibson sounding shit.
+        # I'd totally name this "punch_deck" if it wasn't nondescript.
         self.deck_hits += 1
         self.save()
 

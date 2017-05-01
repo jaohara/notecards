@@ -26,20 +26,21 @@
         </div>
 
         <div class="user-stats-panel">
-            <h3>Questions</h3>
-            <p>{{question_correct_percentage}}%</p>
-            <p>{{questions_correct}} / {{questions_attempted}}</p>
+            <h3>Likes</h3>
+            <p>{{deck_likes}}</p>
+            <p>Lifetime Deck Likes</p>
         </div>
 
         <div class="user-stats-panel">
-            <h3>Quiz Completion</h3>
-            <p>{{quiz_completion_rate}}%</p>
-            <p>{{quizzes_completed}} / {{quizzes_attempted}}</p>
+            <h3>Views</h3>
+            <p>{{deck_hits}}</p>
+            <p>Lifetime Deck Views</p>
         </div>
         
         <div class="user-stats-panel">
-            <h3>Time Spent in Quizzes</h3>
-            <p>{{quiz_duration_minutes}}:{{quiz_duration_seconds}}</p>
+            <h3>Quiz Popularity</h3>
+            <p>{{sitewide_quizzes.count}}</p>
+            <p>Quizzes attempted on user's decks</p>
         </div>
 
     <ul class="user-stats-list">

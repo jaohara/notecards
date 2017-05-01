@@ -4,12 +4,10 @@ $(document).ready(function() {
     */
 
 
+    console.log("Ready has fired.");
+
     /*
-        I want to have this better handled in the future. Instead of using
-        the browser confirm dialog, I want to make a div appear with a 
-        confirm or cancel button so we keep focus within the same window
-        and maintain a similar visual scheme between the app and the dialog.
-    */
+
     $("a.delete-link").on("click", function(event){
         event.stopImmediatePropagation();
         event.preventDefault();
@@ -18,4 +16,41 @@ $(document).ready(function() {
             window.location.href = $(this).attr("href");
         }
     });
+
+    */
+
+    // important to allow for ajax stuff
+    function getCookie(name){
+        var cookieValue = null;
+
+        if (document.cookie && document.cookie != ""){
+            var cookies = document.cookie.split(";");
+
+            for (var i = 0; i < cookies.length; i++){
+                var cookie = jQuery.trim(cookies[i]);
+
+                // does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + "=")){
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+
+        return cookieValue;
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings){
+            if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))){
+                //only send the token to relative URLs, i.e. locally
+                xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+            }
+        }
+    });
+    // end ajax cookie stuff
 });
+
+function logResult(successBool, message){
+    console.log(successBool ? "Success: " + message : "Failure: " + message);
+}

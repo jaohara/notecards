@@ -1,0 +1,54 @@
+{% if hidden_initially %}
+<div class="deck-item-test" style="display: none;" id="deck-{{deck.pk}}">
+{% else %}
+<div class="deck-item-test" id="deck-{{deck.pk}}">
+{% endif %}
+	<div class="deck-meta">
+		<a href="{% url 'deck_view' pk=deck.pk %}"><h1>{{deck.title}}</h1></a>
+		<p>
+    	<span class="deck-origin">Created by {{deck.author}} on {{deck.created_date}}</span>
+		</p>
+
+
+        {% if deck.description|length > 0 %}
+        <p class="deck-description">{{deck.description}}</p>
+        {% endif %}	
+
+       	<p class="deck-tags">
+            <strong>Tags:</strong>
+
+            {% if deck.tags %}
+                {% for tag in deck.tags.all %}
+                    <span class="deck-tag">
+                        <a href="{% url 'tag_deck_list' tag_word=tag.word %}">{{tag.word}}</a>
+                        
+                        {% if user == deck.author %}
+                            <a href="{% url 'remove_tag_from_deck' pk=deck.pk tag_word=tag.word%}">
+                            <span class="glyphicon glyphicon-remove"></span></a>
+                        {% endif %}
+
+                    </span>
+                {% endfor %}
+            {% else %}
+                None
+            {% endif %}
+
+            {% if user == deck.author %}
+                    {% csrf_token %}
+                    {{tag_form}}<a class="tag-input-toggle"href=""><span class="glyphicon glyphicon-plus"></span></a>
+            {% endif %}
+        </p>
+
+        <p class="deck-stats">
+        	<strong>Hits:&nbsp;</strong>{{deck.deck_hits}}
+        	<strong>Likes:&nbsp;</strong>{{deck.deck_likes.count}}
+        </p>
+
+        <!-- gross temporary thing -->
+        {% if user == deck.author %}
+			<a href="" 
+			   class="ajax-delete-deck-link" 
+			   id="ajax-delete-deck-{{deck.pk}}">Delete Deck</a>       
+        {% endif %}
+	</div>
+</div>

@@ -29,7 +29,6 @@
         <meta name="msapplication-TileImage" content="{% static 'img/mstile-144x144.png'%}" />
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-        <script src="{% static 'js/notecards-jquery.js' %}"></script>
     </head>
     <body>
         <div class="page-header">
@@ -40,11 +39,12 @@
             <div class="menu login">
                 {% if user.is_authenticated %}
                     <a href="{% url 'user_profile' pk=user.pk%}">
-                        <!-- this link makes the first item redundant -->
                         <img class="user-avatar" src="{% static 'img/notecards-user-icon-1.png' %}"> 
                         {{user.username}}
-                        &nbsp;<span class="glyphicon glyphicon-chevron-down"></span>
+                        <!-- &nbsp;<span class="glyphicon glyphicon-chevron-down"></span> -->
                     </a>
+
+                    
 
                     <ul class="user-menu">
                         <li class="user-menu-item">
@@ -67,9 +67,8 @@
                         </li>
                     </ul>
 
-                    <!--<a href="{% url 'logout' %}">Logout</a>-->
+
                 {% else %}
-                <!--<div class="logged-out-wrapper">-->
                 <a href="{% url 'create_user' %}" class="logged-out">Sign Up</a>
                 </div>
                 <div class="menu login">
@@ -86,6 +85,23 @@
                 </form>
             </div>
         </div>
+
+        <nav class="site-navigation">
+            <ul>
+                <li><a href="/">All Decks</a></li>
+                <li><a href="{% url 'user_list' %}">All Users</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'user_profile' pk=user.pk %}">Profile</a></li>
+                <li><a href="{% url 'user_messages' %}">Messages</a></li>
+                <li><a href="{% url 'user_stats' pk=user.pk %}">Stats</a></li>
+                <li><a href="{% url 'user_settings' pk=user.pk %}">Settings</a></li>
+                <li><a href="{% url 'logout' %}">Logout</a></li>
+                {% else %}
+                <li><a href="{% url 'create_user' %}">Sign Up</a></li>
+                <li><a href="{% url 'login' %}">Login</a></li>
+                {% endif %}
+            </ul>
+        </nav>
 
         <div class="feedback-container">
             {% block feedback %}
@@ -119,7 +135,8 @@
 
         <div class="footer">
             <div class="footer-left">
-            Copyright &copy;2016-<script>document.write(new Date().getFullYear())</script> John O'Hara
+            Copyright &copy;2016-<script>document.write(new Date().getFullYear())</script> 
+            <a href="http://johnaohara.com">John O'Hara</a>
             </div>
             <div class="footer-right">
             <a href="https://github.com/jaohara/notecards">Github Repository</a>

@@ -1,108 +1,32 @@
 {% extends 'notecards/base.html' %}
 
+{% load staticfiles %}
+
 {% block content %}
-    {% if tag %}
-    <h1>Decks tagged with '{{tag.word}}'</h1>
-    {% elif deck_query == None %}
-    <h1>All Decks</h1>
-    {% else %}
-    <h1>Search results for "{{deck_query}}":</h1>
-    <p>{{decks|length}} deck{{decks|pluralize}} found.</p>
-    {% endif %}
 
-    {% if decks %}
-    <table class="deck-table">
+	<!--- What is this nonsense here for again? -->
+	<style type="text/css">
+		.deck-item-test{
+			margin: 1.0em auto;
+			padding: .75em 2.0em;
+		}
 
-        <tr class="deck-table-header">
-            <!-- this... is kind of gross right now, but bear with me -->
-            {% if sort_method == 'title' and sort_order == 'descending'%}
-            <th>
-                <a href="{% url 'deck_list' sort_method='title' sort_order='ascending'%}">
-                    Deck &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
-                </a>
-            </th>
-            {% else %}
-            <th>
-                <a href="{% url 'deck_list' sort_method='title' sort_order='descending'%}">
-                    Deck &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
-                </a>
-            </th>
-            {% endif %}
+		.deck-item-test .deck-meta h1{
+			width: 100%;
+		}
+	</style>
 
-            {% if sort_method == 'card_count' and sort_order == 'descending'%}
-            <th>
-                <a href="{% url 'deck_list' sort_method='card_count' sort_order='ascending'%}">
-                    Cards &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
-                </a>
-            </th>
-            {% else %}
-            <th>
-                <a href="{% url 'deck_list' sort_method='card_count' sort_order='descending'%}">
-                    Cards &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
-                </a>
-            </th>
-            {% endif %}
+	<script src="{% static 'js/notecards-deck-list-jquery.js' %}">
+	</script>
 
-            {% if sort_method == 'author__username' and sort_order == 'descending'%}
-            <th>
-                <a href="{% url 'deck_list' sort_method='author' sort_order='ascending'%}">
-                    Author &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
-                </a>
-            </th>
-            {% else %}
-            <th>
-                <a href="{% url 'deck_list' sort_method='author' sort_order='descending'%}">
-                    Author &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
-                </a>
-            </th>
-            {% endif %}
+	<h1>All Decks</h1>
+	<div class="deck-container">
+		{% for deck in decks %}
+			{% include 'notecards/deck_item.html' %}
+		{% endfor %}
+	</div>
 
-            {% if sort_method == 'created_date' and sort_order == 'descending'%}
-            <th>
-                <a href="{% url 'deck_list' sort_method='created_date' sort_order='ascending'%}">
-                    Created &nbsp; <span class="glyphicon glyphicon-chevron-up"></span>
-                </a>
-            </th>
-            {% else %}
-            <th>
-                <a href="{% url 'deck_list' sort_method='created_date' sort_order='descending'%}">
-                    Created &nbsp; <span class="glyphicon glyphicon-chevron-down"></span>
-                </a>
-            </th>
-            {% endif %}
-
-            {% if user.is_authenticated %}
-            <th>Remove?</th>
-            {% endif %}
-        </tr>
-
-        {% for deck in decks %}
-        <tr class="deck-table-row">
-            <td><a href="{% url 'deck_view' pk=deck.pk %}">{{deck.title}}</a></td>
-            <td class="centered-cell">{{deck.card_count}}</td>
-            <td>
-                <a href="{% url 'user_profile' pk=deck.author.pk%}">{{deck.author}}</a>
-            </td>
-            <td>{{deck.created_date}}</td>
-            {% if user.is_authenticated %}
-            <td class="centered-cell">
-                {% if user == deck.author %}
-                <a class="delete-link" href="{% url 'delete_deck' pk=deck.pk %}">
-                    <span class="glyphicon glyphicon-remove"></span>
-                </a>
-                {% else %}
-                <span class="glyphicon glyphicon-lock unclickable" 
-                    tooltip="You don't have permission to delete this deck."></span>
-                {% endif %}
-            </td>
-            {% endif %}
-        </tr>
-        {% endfor %}
-
-    </table>
-    {% endif %}
-
-    {% if user.is_authenticated and deck_query == None and tag == None %}
+	{% if user.is_authenticated and deck_query == None and tag == None %}
     <h2>Create a Deck</h2>
     <form method="POST" class="deck-form" action="{% url 'create_deck'%}">
         {% csrf_token %}

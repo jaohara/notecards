@@ -17,7 +17,7 @@
         {% endif %}
 
             <div class="message-controls">
-                <a href="{% url 'user_write_message' recipient_pk=message.sender.pk%}">
+                <a href="{% url 'user_write_message' recipient_pk=message.sender.pk subject='Re: '|add:message.subject %}">
                     <span class="glyphicon glyphicon-share-alt"></span>&nbsp;Reply
                 </a>
                 <a href="{% url 'user_delete_message' message_pk=message.pk %}">

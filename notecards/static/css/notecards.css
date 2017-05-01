@@ -32,14 +32,14 @@
     font-weight: 200;
     margin: 0;
     padding: 0;
-
-    /* probably way more tacky than I once thought
-    text-shadow: 1px 1px rgba(0,0,0,0.2);
-    */
 }
 
 body {
     min-height: 100vh;
+}
+
+.content.container{
+    font-size: 0.8em;
 }
 
 .content.container h1{
@@ -51,10 +51,8 @@ body {
 ------------------------------------------------------ */
 
 .page-header{
-    /*background: rgb(28,37,46);*/
-    /*border: 0 0 1px 0 #fff;
-    box-shadow: 0px 1px 4px rgba(0,0,0,0.4);*/
     background: rgb(12,130,230);
+    border: 0px;
     color: #fff;
     margin: 0px;
     min-height: 74px;
@@ -87,6 +85,43 @@ body {
     margin: 0px;
     padding: 15px;
     width: 20%;
+}
+
+nav{
+    align-items: center;
+    background: rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    border-top: 1px solid rgba(0,0,0,0.2);
+    display: flex;
+    height: 3.2em;
+    margin-top: 0px;
+    width: 100%;
+}
+
+nav ul{
+    margin: 0px 0px 0px 50px;
+}
+
+nav ul li{
+    display: inline;
+    font-size: 1.2em;
+    list-style-type: none;
+    margin-right: 1.0em;
+}
+
+nav ul li a{
+    border-radius: 4px;
+    color: rgba(0,0,0,0.6);
+    font-weight: bold;
+    padding: .5em .5em;
+    text-decoration: none;
+    width: 100%;
+}
+
+nav ul li a:hover{
+    background: rgba(0,0,0,0.1);
+    /*color: #fff;*/
+    text-decoration: none;
 }
 
 /* ------------------------------------------------------
@@ -175,7 +210,7 @@ div.menu-search-bar{
 div.menu-search-bar form input{
     /*background-color: #666;*/
     background-color: rgba(243, 243, 243, 1.0);
-    border: 1px solid #bbb;
+    border: 1px solid rgba(0,0,0,0.2);
     border-radius: 25px;
     color: #222;
     margin: 0px 1.0em;
@@ -261,6 +296,10 @@ ul.user-menu li.user-menu-item a:hover{
 
 div.deck-meta-top-pane, div.card-meta-top-pane { display: flex; }
 
+div.deck-meta-wrapper{
+    display: flex;
+}
+
 div.deck-meta, div.card-meta{
     min-height: 64px;
     margin: 20px 0px;
@@ -280,30 +319,68 @@ div.deck-meta p span.deck-origin{
 }
 
 div.deck-meta h1, div.card-meta h1{
-    float: left;
+    /*float: left;*/
     margin: 8px 0px 8px 0px;
-    width: 50%;
+    /*width: 50%;*/
 }
 
-div.deck-meta div.deck-controls, div.card-meta div.card-controls{
-    float: right;
-    font-size: 1.6em;
-    margin-top: 20px;
-    margin: 0px 0px 8px 0px;
-    text-align: right;
-    width: 50%;
-}
-
-div.deck-meta div.deck-controls a, div.card-meta div.card-controls a{
+div.deck-meta a, div.card-meta a{
     text-decoration: none;
-    display: inline-block;
-    margin: 0em .5em;
+}
 
-    /* Test Values */
+ul.deck-controls/*, div.card-controls*/{
+    font-size: 1.6em;
+    list-style-type: none;
+    margin-top: 20px;
+    /* margin: .8em 1.5em;
+    width: 33%;*/
+}
+
+ul.deck-controls li/*, ul.card-controls li*/{
+    /*border-bottom: 1px solid #ddd;
+    margin: .25em 0em;*/
+    display: inline;
+}
+
+ul.deck-controls a/*, div.card-controls a*/{
     border: 1px solid rgba(0,0,0,0.0);
     border-radius: 4px;
-    padding: .5em;
+    margin: 0em 1.0em 0em 0em;
+    padding: .5em .25em;
+    text-decoration: none;
     transition: background .2s;
+    width: 100%;
+}
+
+div.deck-likes{
+    background: rgba(0,0,0,0.05);
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 4px;
+    font-size: 1.6em;
+    left: -3em;
+    padding: 10px 5px;
+    position: absolute;
+    text-align: center;
+    top: 1.6em;
+    width: 3.0em;
+}
+
+div.deck-likes a{
+    display: block;
+    text-decoration: none;
+    width: 100%;
+}
+
+.glyphicon.liked {
+    color: rgb(255, 176, 18);
+}
+
+.glyphicon.unliked {
+    color: rgba(80,80,80,0.1);
+}
+
+.glyphicon.liked, .glyphicon.unliked{
+    text-shadow: 0px 1px 1px rgba(0,0,0,0.05);
 }
 
 .unclickable{
@@ -328,6 +405,56 @@ div.deck-meta div.deck-controls a, div.card-meta div.card-controls a{
     z-index: 98;
 }
 
+
+/* ------------------------------------------------------
+    Tags
+------------------------------------------------------ */
+
+p.deck-tags{
+    line-height: 2.0em;
+}
+
+p.deck-tags span.glyphicon-tags {
+    margin: 0px 10px;
+}
+
+span.deck-tag{
+    white-space: nowrap;
+}
+
+span.deck-tag, .tag-form input{
+    background: rgba(179, 212, 251, 0.5);
+    border-radius: 4px;
+    color: rgba(0,75,107,1.0);
+    margin-right: .5em;
+    padding: .25em .4em;
+}
+
+span.deck-tag a{
+    text-decoration: none;
+    text-decoration-style: dashed;
+}
+
+span.deck-tag a:hover{
+    text-decoration: underline;
+}
+
+span.deck-tag a span.glyphicon.glyphicon-remove{
+    font-size: 0.7em;
+    color: rgba(0,75,107,0.6);
+    padding: .25em;
+    transition: color .2s;
+}
+
+span.deck-tag a span.glyphicon.glyphicon-remove:hover{
+    color: rgba(0,75,107,1.0);
+}
+
+.tag-input-toggle{
+    margin-left: .25em;
+}
+
+
 /* ------------------------------------------------------
     Feedback
 ------------------------------------------------------ */
@@ -336,15 +463,15 @@ div.feedback-container{
     text-align: center;
 }
 
+div.feedback-positive, div.feedback-negative, div.feedback-neutral, nav{
+    box-shadow: 0px 1px 8px rgba(0,0,0,0.2);
+}
+
 div.feedback-positive, div.feedback-negative, div.feedback-neutral{
     border-bottom: 1px solid #fff;
-    box-shadow: 0px 1px 8px rgba(0,0,0,0.2);
     font-size: 1.4em;
     font-weight: bold;
     padding: .8em 0em;
-
-    /* tweak this */
-    /*text-shadow: 1px 1px 1px rgba(0,0,0,.75);*/
 }
 
 div.feedback-none{
@@ -379,8 +506,8 @@ div.feedback-neutral{
     box-shadow: 0px 6px 10px rgba(0,0,0,0.2);
     font-size: 2.0em;
     height: 8.0em;
-    /*margin: 2%;*/
-    width: 45%;
+    margin: 2% 5%;
+    width: 39.75%; /* this is a bit too magic-number-ey for my liking */
     text-align: center;
 }
 
@@ -390,7 +517,7 @@ div.feedback-neutral{
 
 .card-form {
     margin: 1.0em auto;
-    width: 90%;
+    width: 100%;
 }
 
 .card-form #card-wrapper{
@@ -437,48 +564,12 @@ div.feedback-neutral{
 
 .tag-form input{
     border: 0px;
-    border-bottom-right-radius: 0px 0px;
-    /*border-right: 1px solid rgba(0,75,107,1.0);*/
-    border-top-right-radius: 0px 0px;
+    /*border-bottom-right-radius: 0px 0px;
+    border-right: 1px solid rgba(0,75,107,1.0);
+    border-top-right-radius: 0px 0px;*/
     margin-right: 0px;
     outline: none;
     width: 0em;
-}
-
-/* ------------------------------------------------------
-    Tags
------------------------------------------------------- */
-
-p.deck-tags{
-    line-height: 2.0em;
-}
-
-span.deck-tag, .tag-form input{
-    background: rgba(179, 212, 251, 0.5);
-    border-radius: 4px;
-    color: rgba(0,75,107,1.0);
-    margin-right: .5em;
-    padding: .25em .4em;
-}
-
-span.deck-tag a{
-    text-decoration: none;
-    text-decoration-style: dashed;
-}
-
-span.deck-tag a:hover{
-    text-decoration: underline;
-}
-
-span.deck-tag a span.glyphicon.glyphicon-remove{
-    font-size: 0.7em;
-    color: rgba(0,75,107,0.6);
-    padding: .25em;
-    transition: color .2s;
-}
-
-span.deck-tag a span.glyphicon.glyphicon-remove:hover{
-    color: rgba(0,75,107,1.0);
 }
 
 /* ------------------------------------------------------
@@ -582,11 +673,7 @@ table.deck-table th, table.deck-table td{
 }
 
 .deck-table-header th:hover, .user-table-header th:hover{
-    background-color: rgb(13, 106, 203);
-    color: #fff;
-
-    /*rgb(118, 177, 238);*/
-
+    /*background-color: rgb(13, 106, 203);*/
 }
 
 .deck-table-header th:hover span.glyphicon, .user-table-header th:hover span.glyphicon{
@@ -831,7 +918,7 @@ div.review-content{
 
 /* shared rule with .message.... and now every other form element. */
 
-div.front, div.back, div.message, ul.temp-quiz-list li a, div.user-stats-panel, div.form-wrapper{
+div.front, div.back, div.message, ul.temp-quiz-list li a, div.user-stats-panel, div.form-wrapper, div.deck-item-test{
     background: rgba(243, 243, 243, 1.0);
     border: 1px solid rgba(187, 187, 187, .75);
     border-radius: 4px;
@@ -979,7 +1066,7 @@ ul.user-profile-info-nav li{
     padding: .5em;
 }
 
-ul.user-profile-info-nav li:hover{
+ul.user-profile-info-nav li:hover, ul.deck-controls a:hover, ul.card-controls a:hover{
     background: rgba(179, 212, 251, 0.5);
 }
 

@@ -1,5 +1,4 @@
-import random
-import time
+import random, time, json
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
@@ -8,7 +7,12 @@ from django.core import serializers
 from django.db.models.functions import Lower
 from django.shortcuts import render, get_object_or_404, redirect, render_to_response
 from django.template import RequestContext
+from django.template.loader import render_to_string
 from django.utils import timezone
+
+#Ajax Junk
+from django.http import JsonResponse
+#/Ajax Junk
 
 from django.contrib.auth.models import User
 from .models import Card, Deck, Message, QuizResult, Tag, UserProfile
@@ -17,7 +21,7 @@ from .forms import CardForm, DeckForm, DeckEditForm, MessageForm, UserForm, TagF
 from .utils import reset_session_cards, reset_session_quiz, make_elipsis, save_quiz_results, mail_count_check
 
 
-# This might belong in a differen views.py, but it's here for now.
+# This might belong in a different views.py, but it's here for now.
 def handler404(request):
     response = render_to_response('404.html', {},
                                   context_instance=RequestContext(request))
@@ -37,16 +41,10 @@ def handler500(request):
     return respose
 
 def deck_list(request, sort_method="created_date", sort_order="ascending", deck_query=None):
-    
     if request.GET.get('search'):
         deck_query = request.GET["search"]
 
     accepted_methods = ["created_date", "author", "title", "card_count"]
-
-    order_switch = ""
-
-    if sort_order == "descending":
-        order_switch = "-"
 
     if sort_method not in accepted_methods:
         sort_method = "created_date"
@@ -56,13 +54,17 @@ def deck_list(request, sort_method="created_date", sort_order="ascending", deck_
 
     save_quiz_results(request)
     reset_session_cards(request)
+
     if deck_query is not None:
-        # flesh this out in the future to be more robust, better pattern matching etc.
-        decks = Deck.objects.filter(title__icontains=deck_query).order_by("{}{}".format(order_switch,sort_method))
+        decks = Deck.objects.filter(title__icontains=deck_query).order_by(Lower(sort_method))
     else:
-        # Here's where we need to use Lower() to avoid case affecting sort order
-        decks = Deck.objects.order_by("{}{}".format(order_switch,sort_method))
+        decks = Deck.objects.order_by(Lower(sort_method))
+
+    if sort_order == "descending":
+        decks = decks.reverse()
+
     form = DeckForm()
+
     return render(request, 'notecards/deck_list.html', {'decks': decks,
                                                         'deck_query': deck_query, 
                                                         'form': form,       # REMOVED IN SEARCH CASES?
@@ -82,8 +84,6 @@ def tag_deck_list(request, tag_word):
                                                         'tag': tag,})
 
 def deck_view(request, pk):
-    
-
     quiz_results = ""
     feedback_type = "none"
 
@@ -101,14 +101,17 @@ def deck_view(request, pk):
     save_quiz_results(request)
     reset_session_cards(request)
     deck = get_object_or_404(Deck, pk=pk)
+    deck.hit_deck()
     cards = Card.objects.filter(deck__pk=deck.pk)
     card_form = CardForm()
     tag_form = TagForm()
+    deck_is_liked = True if request.user.is_authenticated() and request.user in deck.deck_likes.all() else False
 
 
     return render(request, 'notecards/deck_view.html', {'cards': cards,
                                                         'card_form': card_form,
                                                         'deck': deck,
+                                                        'deck_is_liked': deck_is_liked,
                                                         'feedback_type': feedback_type, 
                                                         'quiz_results': quiz_results,
                                                         'tag_form': tag_form,})
@@ -150,10 +153,10 @@ def deck_review(request, pk, card_index=0):
                                                               'pk': pk,})
 
 @login_required
-def deck_quiz(request, deck_pk, answer_choice=None):
+def deck_quiz(request, pk, answer_choice=None):
 
     if 'quiz' not in request.session:
-        quiz_deck = get_object_or_404(Deck, pk=deck_pk)
+        quiz_deck = get_object_or_404(Deck, pk=pk)
         card_set = Card.objects.filter(deck__pk=quiz_deck.pk)
 
         quiz = list()
@@ -172,7 +175,7 @@ def deck_quiz(request, deck_pk, answer_choice=None):
         request.session['quiz_attempted'] = 0
         request.session['quiz_correct'] = 0
         request.session['quiz_count'] = quiz_deck.card_count
-        request.session['quiz_deck_pk'] = deck_pk
+        request.session['quiz_deck_pk'] = pk
         request.session['quiz_finished'] = False
         request.session['quiz_index'] = quiz_index
         request.session['quiz_name'] = quiz_deck.title
@@ -338,8 +341,6 @@ def deck_quiz(request, deck_pk, answer_choice=None):
                                                             'quiz_index': quiz_index,
                                                             'quiz_score': quiz_score,})
 
-
-
 @login_required
 def flush_session(request):
     request.session.flush()
@@ -348,13 +349,38 @@ def flush_session(request):
 @login_required
 def create_deck(request):
     if request.method =="POST":
-        form = DeckForm(request.POST)
-        if form.is_valid():
-            deck = form.save(commit=False)
-            deck.author = request.user
-            deck.save()
-            return redirect('/')
+        if request.is_ajax():
+            user = request.user
+            deck_name = request.POST.get("deck_name")
+            deck = Deck(title=deck_name, author=user)
+
+        else:
+            form = DeckForm(request.POST)
+            if form.is_valid():
+                deck = form.save(commit=False)
+                deck.author = request.user
+
+        deck.save()
+        if request.is_ajax():
+            deck_html = render_to_string('notecards/deck_item.html',{
+                    "deck": deck,
+                    #"hidden_initially": True,
+                    "user": user,
+                })
+
+            return JsonResponse({
+                    'success': True,
+                    'message': "Deck created successfully!",
+                    'deck_html': deck_html,
+                })
+
+        return redirect('/')
     else:
+        if request.is_ajax():
+            return JsonResponse({
+                'success': False,
+                'message': "Request was not submitted via POST.",
+            })
         return redirect('/')
 
 @login_required
@@ -363,12 +389,19 @@ def delete_deck(request, pk):
 
     if request.user == deck.author:
         deck.delete()
-
-
-    # this will probably be an  AJAX operation in the future, in the meantime redirect to the latest page
-
-    # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
-    # return redirect('/')
+        if request.is_ajax:
+            return JsonResponse({
+                'success': True,
+                'message': "Deck {} successfully deleted.".format(pk)
+            })
+    else:
+        if request.is_ajax():
+            return JsonResponse({
+                    'success': False,
+                    'message': "You are not authorized to delete this deck.",
+                })
+        # not a graceful fail state
+        return redirect("/")
     return redirect(request.META.get('HTTP_REFERER'))
 
 @login_required
@@ -400,41 +433,160 @@ def edit_deck(request, pk):
 def add_card_to_deck(request, pk):
     if request.method == "POST":
         deck = get_object_or_404(Deck, pk=pk)
-        form = CardForm(request.POST)
         if request.user == deck.author:
-            if form.is_valid():
-                card = form.save(commit=False)
-                card.deck = deck
-                card.save()
-                deck.add_card()
-                return redirect('deck_view', pk=deck.pk)
+            if request.is_ajax():
+                card_values = request.POST.get("card_values")
+                card = Card(deck=deck,
+                    front=card_values.front,
+                    back=card_values.back)
+            else:
+                form = CardForm(request.POST)
+
+                if form.is_valid():
+                    card = form.save(commit=False)
+                    card.deck = deck
+
+            card.save()
+            deck.add_card()
+            
+            if request.is_ajax():
+                """
+                    Following the pattern of creating a deck, we probably don't
+                    want to just pass the values for card.front and card.back but
+                    rather render them out through a template and return the
+                    HTML as a string in the JSON object. 
+                """
+                return JsonResponse({
+                    'success': True,
+                    'message': "Card successfully added to deck.",
+                    'card_front': card.front,
+                    'card_back': card.back,
+                })
+
+            return redirect('deck_view', pk=deck.pk)
         else:
+            if request.is_ajax():
+                return JsonResponse({
+                    'success': False,
+                    'message': "You are not authorized to add a card to this deck.",
+                })
             redirect('/')
     else:
+        if request.is_ajax():
+            return JsonResponse({
+                'success': False,
+                'message': "Request was not submitted via POST.",
+            })
+
         redirect('/')
+
+@login_required
+def edit_card(request, pk):
+    # what do I need the deck for?
+    card = get_object_or_404(Card, pk=pk)
+    deck = card.deck
+
+    if request.method == "POST":
+        form = CardForm(request.POST or None, instance=card)
+        if form.is_valid():
+            form.save()
+            return redirect('deck_view', pk=deck.pk)
+
+    else:
+        if request.user.is_authenticated():
+            username = request.user
+            if deck.author == username:
+                form = CardForm(initial={'front': card.front,
+                                         'back': card.back,})
+
+                return render(request, 'notecards/card_edit.html', {'card': card,
+                                                                    'card_pk': pk,
+                                                                    'deck': deck,
+                                                                    'deck_pk': deck.pk,
+                                                                    'form': form,})
+        else: 
+            return redirect('deck_view', pk=deck_pk)
+
+@login_required
+def delete_card_from_deck(request, pk):
+    card = get_object_or_404(Card, pk=pk)
+    deck = card.deck
+
+    if request.user == deck.author:
+        card.delete()
+        deck.remove_card()
+
+        if request.is_ajax():
+            return JsonResponse({
+                'success': True,
+                'message': "Card {} removed successfully from deck.".format(pk),
+            })
+
+    else:
+        if request.is_ajax():
+            return JsonResponse({
+                'success': False,
+                'message': "You are not authorized to delete cards from this deck.",
+            })
+
+    return redirect('deck_view', pk=deck.pk)
 
 @login_required
 def add_tag_to_deck(request, pk):
     if request.method == "POST":
         deck = get_object_or_404(Deck, pk=pk)
-        form = TagForm(request.POST)
-        if request.user == deck.author:
-            if form.is_valid():
-                tag = form.save(commit=False)
-                if Tag.objects.filter(word=form.cleaned_data['word']).count() == 0:
-                    # create tag object
-                    tag.save()
 
-                tag = Tag.objects.get(word=form.cleaned_data['word'])
-                # add tag to deck
+        if request.user == deck.author:
+            if request.is_ajax():
+                tag_word = request.POST.get("tag_word")
+            else:
+                form = TagForm(request.POST)
+                if form.is_valid():
+                    tag_word = form.cleaned_data['word']
+
+            tag = Tag(word=tag_word)
+
+            if Tag.objects.filter(word=tag_word).count() == 0:
+                # create tag object
+                tag.save()
+
+            # grab new tag
+            tag = Tag.objects.get(word=tag_word)
+
+            # add tag to deck
+            if tag not in deck.tags.all():
                 deck.add_tag(tag)
                 deck.save()
+            else:
+                if request.is_ajax():
+                    return JsonResponse({
+                        "tag_word": tag_word,
+                        "success": False,
+                        "message": "'{}' is already a tag of deck {}.".format(tag_word, pk),
+                    })
 
+            if request.is_ajax():
+                return JsonResponse({
+                    "tag_word": tag_word,
+                    "success": True,
+                    "message": "'{}' has been added as a tag to deck {}.".format(tag_word, pk),
+                })
+
+            else:
                 return redirect('deck_view', pk=deck.pk)
         else:
+            # this is not a graceful fail state.
             return redirect('/')
 
     else:
+        if request.is_ajax():
+            return JsonResponse({
+                "tag_word": "",
+                "success": False,
+                "message": "Request was not submitted via POST.",
+            })
+
+        # this is not a graceful fail state.
         return redirect('/')
 
 @login_required
@@ -445,64 +597,43 @@ def remove_tag_from_deck(request, pk, tag_word):
     if request.user == deck.author:
         deck.remove_tag(tag)
         deck.save()
+        if request.is_ajax():
+            return JsonResponse({
+                'success': True,
+                'message': "{} removed from deck {}.".format(tag_word, pk),
+                })
         return redirect('deck_view', pk=deck.pk)
 
     else:
+        if request.is_ajax():
+            return JsonResponse({
+                    'success': False,
+                    'message': "Not authorized to remove tags from deck {}.".format(pk),
+                })
         return redirect('/')
 
 @login_required
-def edit_card(request, deck_pk, card_pk):
-    # what do I need the deck for?
-    deck = get_object_or_404(Deck, pk=deck_pk)
-    card = get_object_or_404(Card, pk=card_pk)
-
-    if request.method == "POST":
-        form = CardForm(request.POST or None, instance=card)
-        if form.is_valid():
-            form.save()
-            return redirect('deck_view', pk=deck_pk)
-
-    else:
-        if request.user.is_authenticated():
-            username = request.user
-            if deck.author == username:
-                form = CardForm(initial={'front': card.front,
-                                         'back': card.back,})
-
-                return render(request, 'notecards/card_edit.html', {'card': card,
-                                                                    'card_pk': card_pk,
-                                                                    'deck': deck,
-                                                                    'deck_pk': deck_pk,
-                                                                    'form': form,})
-        else: 
-            return redirect('deck_view', pk=deck_pk)
-
-@login_required
-def remove_card_from_deck(request, pk):
-    card = get_object_or_404(Card, pk=pk)
-    deck = card.deck
-    card.delete()
-    deck.remove_card()
-    return redirect('deck_view', pk=deck.pk)
-
-@login_required
 def like_deck(request, pk):
-    """
-        This is an ajax-less test for something that will use Ajax in the future.
-        The functionality should be very similar, but obviously without the redirecting.
-    """
-
     deck = get_object_or_404(Deck, pk=pk)
     if request.user.is_authenticated():
         deck.like(request.user)
 
+    # ajax situation
+    if request.is_ajax():
+        data = {
+            'deck_likes': len(deck.deck_likes.all()),
+            'deck_is_liked': True if request.user in deck.deck_likes.all() else False,
+        }
+
+        return JsonResponse(data)
+
     return redirect('deck_view', pk=deck.pk)
-"""
-
-    USER CREATION VIEWS
 
 """
-
+    ==================
+    USER PROFILE VIEWS
+    ==================
+"""
 
 def create_user(request):
     if request.method == "POST":
@@ -518,15 +649,6 @@ def create_user(request):
         form = UserForm()
 
     return render(request, 'registration/create_user.html', {'form': form,})
-
-
-"""
-
-
-    USER PROFILE VIEWS
-
-
-"""
 
 # I don't know if you need to be logged in for any of this, but it would
 # probably be the difference between viewing a profile and editing your own
@@ -552,7 +674,6 @@ def user_profile(request, pk):
     return render(request, 'user_profiles/user_profile.html', {'favorite_tags': favorite_tags[:10],
                                                                'mail_count': mail_count,
                                                                'selected_user': selected_user,})
-
 
 @login_required
 def user_messages(request, feedback_type=None, feedback_text=None):
@@ -581,9 +702,8 @@ def user_messages(request, feedback_type=None, feedback_text=None):
                                                                 'outbox': outbox,
                                                                 'selected_user': request.user})
 
-
 @login_required
-def user_write_message(request, recipient_pk=None):
+def user_write_message(request, recipient_pk=None, subject=False):
     if request.method == "POST":
         message_form = MessageForm(request.POST)
         if message_form.is_valid():
@@ -608,7 +728,7 @@ def user_write_message(request, recipient_pk=None):
                 """
             return user_messages(request, feedback_type, feedback_text)
     
-    message_form = MessageForm(initial={'recipient': recipient_pk})
+    message_form = MessageForm(initial={'recipient': recipient_pk, 'subject': subject})
 
     return render(request, 'user_profiles/user_write_message.html', {'mail_count': mail_count_check(request, request.user),
                                                                      'message_form': message_form,
@@ -645,12 +765,15 @@ def user_settings(request, pk):
                                                                 'password_form': password_form,
                                                                 'selected_user': selected_user,})
 
-
 @login_required
 def user_stats(request, pk):
     selected_user = get_object_or_404(User, pk=pk)
     stats = QuizResult.objects.filter(user=selected_user.pk)
+    decks = Deck.objects.filter(author=selected_user.pk)
+    sitewide_quizzes = QuizResult.objects.filter(deck__author=selected_user.pk)
 
+    total_deck_hits = 0
+    total_deck_likes = 0
     total_questions_correct = 0
     total_questions_attempted = 0
     total_quiz_duration = 0
@@ -665,6 +788,10 @@ def user_stats(request, pk):
         total_questions_correct += stat.questions_correct
         total_questions_attempted += stat.questions_attempted
         total_quiz_duration += stat.quiz_duration
+
+    for deck in decks:
+        total_deck_hits += deck.deck_hits
+        total_deck_likes += len(deck.deck_likes.all())
 
     quiz_duration_minutes = '{:.0f}'.format((total_quiz_duration/1000)//60)
     quiz_duration_seconds = '{:.2f}'.format((total_quiz_duration/1000)%60)
@@ -681,7 +808,9 @@ def user_stats(request, pk):
 
     mail_count = mail_count_check(request, selected_user)
 
-    return render(request, 'user_profiles/user_stats.html', {'mail_count': mail_count,
+    return render(request, 'user_profiles/user_stats.html', {'deck_hits': total_deck_hits,
+                                                             'deck_likes': total_deck_likes,
+                                                             'mail_count': mail_count,
                                                              'question_correct_percentage': question_correct_percentage,
                                                              'questions_attempted': total_questions_attempted,
                                                              'questions_correct': total_questions_correct,
@@ -692,8 +821,8 @@ def user_stats(request, pk):
                                                              'quizzes_attempted': total_quizzes_attempted,
                                                              'quizzes_completed': total_quizzes_completed,
                                                              'selected_user': selected_user,
+                                                             'sitewide_quizzes': sitewide_quizzes,
                                                              'stats': stats,})
-
 
 @login_required
 def user_decks(request, pk, sort_method="created_date", sort_order="ascending"):
@@ -722,7 +851,6 @@ def user_decks(request, pk, sort_method="created_date", sort_order="ascending"):
                                                              'selected_user': selected_user,
                                                              'sort_method': sort_method,
                                                              'sort_order': sort_order,})
-
 
 # this shares a little more than I'd like with deck_list
 @login_required
@@ -755,3 +883,53 @@ def user_list(request, sort_method="date_joined", sort_order="ascending", user_q
                                                             'sort_order': sort_order,
                                                             'user_query': user_query,
                                                             'users': users,})
+
+
+"""
+    ============
+    AJAX METHODS
+    ============
+
+    ... this whole approach was stupid. Why did I do this this way? So much code reuse when
+    I could have just checked request.is_ajax() in each of the other views. This also doubles
+    the amount of url patterns I need to match.
+
+    I'm in progress of combining all of these with their original ones.
+"""
+
+# NEVER WRITTEN
+@login_required
+def ajax_edit_card(request, pk):
+    # pk is now card pk
+
+    return JsonResponse({'placeholder': True,})
+
+# NEVER WRITTEN
+@login_required
+def ajax_edit_deck(request, pk):
+    # pk is deck pk
+
+    return JsonResponse({'placeholder': True,})
+
+#merged with delete_deck
+def ajax_delete_deck(request, pk):
+    
+    deck = get_object_or_404(Deck, pk=pk)
+    """
+    return JsonResponse({
+            'success': True,
+            'message': "Recieved deck pk: {}, request.user: ".format(pk, request.user)
+        })
+    """
+
+    if request.user == deck.author:
+        deck.delete()
+        return JsonResponse({
+                'success': True,
+                'message': "Deck {} successfully deleted.".format(pk)
+            })
+    else:
+        return JsonResponse({
+                'success': False,
+                'message': "You are not authorized to delete this deck.",
+            })
